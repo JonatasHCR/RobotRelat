@@ -4,8 +4,8 @@ banco.py
 modulo que cria o banco de dados, e faz sua manipulação
 '''
 
-import sqlite3
 import os
+import sqlite3
 
 ROOT_DIR = 'database'
 DB_NAME = 'db.sqlite3'
@@ -36,7 +36,7 @@ def criar_banco():
             '('
             'cc TEXT NOT NULL,'
             'numero_nota TEXT,'
-            'valor_nota REAL,'
+            'valor_nota INTEGER,'
             'data_fat TEXT,'
             'data_pag TEXT,'
             'FOREIGN KEY (cc) REFERENCES clientes (centro_custo) ON DELETE CASCADE'
@@ -83,3 +83,47 @@ def inserir_nota(centro_de_custo,numero_nota,valor,data_fat,data_pag):
     finally:
         cursor.close()
         connection.close()
+
+def retirar_all():
+    try:
+        connection = sqlite3.connect(DB_FILE)
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM clientes')
+        clientes = cursor.fetchall()
+
+        dados = []
+        for cliente in clientes:
+            cliente = list(cliente)
+            cursor.execute('SELECT * FROM notas WHERE cc = ?',(cliente[1],))
+            notas = cursor.fetchall()
+            
+            if notas == []:
+                continue
+
+            for nota in notas:
+                cliente.extend(nota[1:])
+                dados.append(cliente)
+            
+        return dados
+                
+    finally:
+        cursor.close()
+        connection.close()
+
+def modificar(nome,dados,ref_dados,default_var,nome_novo):
+    try:
+        connection = sqlite3.connect(DB_FILE)
+        cursor = connection.cursor()
+        cursor.execute('''
+        UPDATE modelos
+        SET default_variaveis = ?, ref_variaveis = ?, variaveis = ?, name = ?
+        WHERE name = ?;
+    ''', ()
+        )
+        connection.commit()
+    finally:
+        cursor.close()
+        connection.close()
+
+if __name__ == '__main__':
+    pass
