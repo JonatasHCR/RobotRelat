@@ -14,12 +14,13 @@ import customtkinter as ctk
 from tkcalendar import Calendar
 import tkinter as tk
 
-import utils.utils as utils
+import controller.controller as controller
 
 
 class App(ctk.CTk):
     def __init__(self):
         self.entrys = dict()
+        self.checks = list()
         
         super().__init__()
         self._set_appearance_mode('dark')
@@ -28,51 +29,76 @@ class App(ctk.CTk):
 
         self.criar_botao('Cadastrar Cliente',self.janela_cliente,0,0,self)
         self.criar_botao('Adicionar Nota',self.janela_nota,0,1,self)
-        self.criar_botao('Cadastrar Cliente',self.janela_cliente,0,2,self)
+        self.criar_botao('Alterar Dados',self.janela_modificar,0,2,self)
+        self.criar_botao('Gerar Relatório',self.janela_relatorio,0,3,self)
 
         self.mainloop()
 
     
     def janela_cliente(self):
         janela = ctk.CTkToplevel(self)
-        janela.geometry("300x300")
+        janela.geometry("500x300")
         janela.title("Cadastro Cliente")
 
         # Traz a janela para frente
         janela.focus()  
         janela.attributes("-topmost", True)  # Mantém sempre no topo
 
-        self.criar_entrys(['Cliente', 'Centro de Custo', 'Descrição'],0,0,janela)
-        self.criar_botao('Enviar',lambda: utils.cadastrar_cliente(texto_feedback,self.entrys),1,3,janela)
+        texto = ctk.CTkLabel(janela,text='Selecione a Quantidade de Registros:')
+        texto.grid(column=0, row=0)
+        quant = self.criar_entry_opcao(janela,1,0,20)
+
+        self.criar_entrys(['Cliente', 'Centro de Custo', 'Descrição'],0,1,janela)
+        self.criar_botao('Enviar',lambda: controller.cadastrar_cliente(texto_feedback,self.entrys,quant),1,4,janela)
 
         texto_feedback = ctk.CTkLabel(janela,text='')
-        texto_feedback.grid(column=1, row=4,pady=10,padx=10)
+        texto_feedback.grid(column=1, row=5,pady=10,padx=10)
     
     def janela_nota(self):
         janela = ctk.CTkToplevel(self)
-        janela.geometry("500x400")
+        janela.geometry("600x400")
         janela.title("Cadastro Nota")
 
         # Traz a janela para frente
         janela.focus()  
-        janela.attributes("-topmost", True)  # Mantém sempre no 
+        janela.attributes("-topmost", True)  # Mantém sempre no
         
-        self.criar_entrys(['Centro de Custo', 'Numero da Nota', 'Valor da Nota'],0,0,janela)
-        self.criar_entry_data(janela,0,3,'Data de Faturamento')
-        self.criar_entry_data(janela,0,4,'Data de Pagamento')
-        self.criar_botao('Enviar',lambda: utils.cadastrar_nota(texto_feedback,self.entrys),1,5,janela)
+        texto = ctk.CTkLabel(janela,text='Selecione a Quantidade de Registros:')
+        texto.grid(column=0, row=0)
+        quant = self.criar_entry_opcao(janela,1,0,20)
+   
+        self.criar_entrys(['Centro de Custo', 'Numero da Nota', 'Valor da Nota'],0,1,janela)
+        self.criar_entry_data(janela,0,4,'Data de Faturamento')
+        self.criar_entry_data(janela,0,5,'Data de Pagamento')
+        self.criar_botao('Enviar',lambda: controller.cadastrar_nota(texto_feedback,self.entrys,quant),1,6,janela)
 
         texto_feedback = ctk.CTkLabel(janela,text='')
-        texto_feedback.grid(column=1, row=6,pady=10,padx=10)
+        texto_feedback.grid(column=1, row=7,pady=10,padx=10)
     
+    def janela_modificar(self):
+        janela = ctk.CTkToplevel(self)
+        janela.geometry("350x400")
+        janela.title("Alterar Dados")
+
+        # Traz a janela para frente
+        janela.focus()  
+        janela.attributes("-topmost", True)  # Mantém sempre no
+
+        self.criar_botao('Modificar Clientes','fazendo...',0,0,janela)
+        self.criar_botao('Modificar Notas','fazendo...',1,0,janela)
+
     def janela_relatorio(self):
         janela = ctk.CTkToplevel(self)
         janela.geometry("500x400")
         janela.title("Relatório")
 
-        self.criar_botao('Ver Clientes','fazendooo..',0,0,janela)
-        self.criar_botao('Ver Notas','fazendooo..',1,0,janela)
-        self.criar_botao('Ver Tudo','fazendooo..',2,0,janela)
+        # Traz a janela para frente
+        janela.focus()  
+        janela.attributes("-topmost", True)  # Mantém sempre no
+
+        self.criar_botao('Ver Clientes',lambda: controller.retirar_clientes(0,janela),0,0,janela)
+        self.criar_botao('Ver Notas',lambda: controller.retirar_notas(0,janela),1,0,janela)
+        self.criar_botao('Ver Tudo',lambda: controller.retirar_all(0,janela),2,0,janela)
 
 
 
@@ -93,6 +119,17 @@ class App(ctk.CTk):
 
             contador += 1
     
+    def criar_entry_opcao(self,janela,coluna,linha, quantidade_opcao):
+        numeros = []
+        for n in range(1,quantidade_opcao+1):
+            numeros.append(str(n))
+
+        entry =  ctk.CTkComboBox(janela, values=numeros)
+        entry.set(numeros[0])
+        entry.grid(column=coluna, row=linha,pady=10,padx=10)
+        
+        return entry
+
     def criar_entry_data(self,janela,coluna,linha,text):
         def popup_calendario(entry):
             def selecionar_data():
