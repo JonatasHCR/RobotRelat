@@ -1,9 +1,10 @@
 '''
-Pacote database
+Pacote controller
 
-Feito com os principais métodos do projeto envolvendo banco 
-de dados que serão repetidos ao longo do projeto
+Feito com os principais métodos do projeto envolvendo acesso 
+ao banco de dados pedidos pela interface ao longo do projeto
 
 Subpacotes:
-    banco.py: Gera o banco, e faz o controle
+    controller.py: Aciona o banco, e entrega a resposta a 
+    interface
 '''

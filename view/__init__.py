@@ -1,9 +1,9 @@
 '''
-Pacote database
+Pacote view
 
-Feito com os principais métodos do projeto envolvendo banco 
-de dados que serão repetidos ao longo do projeto
+Feito com os principais métodos do projeto envolvendo interface 
+do projeto
 
 Subpacotes:
-    banco.py: Gera o banco, e faz o controle
+    janela.py: Gera a interface, do projeto
 '''

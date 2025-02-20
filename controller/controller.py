@@ -1,244 +1,236 @@
+'''
+controller.py
+
+modulo que estará contendo a classe que faz a ponte entre a parte
+gráfica, e o banco de dados.
+
+'''
+
+#importações para que consiga importar 
+#desde a raiz do projeto
 import sys
 import os
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0,PROJECT_ROOT)
 
+#importando o erro
 from sqlite3 import IntegrityError
-import model.banco as banco
 
-from datetime import datetime
-import customtkinter as ctk
+#importações para funcionamento da classe
+from model.banco import DatabasePro
+from config.utils import UtilsPro
 
-def cadastrar_nota(texto_feedback, dicionario, quant_regs):
+#importação para a tipagem
+from customtkinter import CTkLabel
+
+class ControllerPro:
+    """
+    Classe responsável pelo controle das operações do sistema financeiro.
+
+    Atua como intermediária entre a interface gráfica e o banco de dados,
+    realizando operações como cadastro, modificação e recuperação de clientes e notas fiscais.
+    """
+
+    def __init__(self):
+        """
+        Inicializa a classe ControllerPro.
         
-        quant = int(quant_regs.get())
+        Cria instâncias das classes DatabasePro e UtilsPro.
+        """
+        self.db = DatabasePro()
+        self.utils = UtilsPro()
 
-        centro_custo = dicionario['Centro de Custo'].get()
-        dicionario['Centro de Custo'].delete(0,'end') if quant <= 1 else ...
+    def cadastrar_nota(self, texto_feedback: CTkLabel, dicionario: dict) -> None:
+        """
+        Cadastra uma nota fiscal no banco de dados.
 
-        if not banco.verificar_centro_custo(centro_custo):
-            texto_feedback.configure(text='Erro ao cadastrar centro de custo não existe', text_color='red')
-            return
-
-        numero_nota = dicionario['Numero da Nota'].get()
-        dicionario['Numero da Nota'].delete(0,'end')
-
-        valor_nota = dicionario['Valor da Nota'].get()
-        dicionario['Valor da Nota'].delete(0,'end')
-
-        data_fat = dicionario['Data de Faturamento'].get()
-        dicionario['Data de Faturamento'].delete(0,'end') 
-
-        data_pag = dicionario['Data de Pagamento'].get()
-        dicionario['Data de Pagamento'].delete(0,'end')
-
-        centro_custo = centro_custo.strip()
-        numero_nota = numero_nota.strip()
+        param:
+            texto_feedback(CTkLabel): Label para exibir mensagens de feedback ao usuário.
+            dicionario(dict): Dicionário contendo os dados da nota a serem cadastrados.
+        """
         try:
-            valor_nota = float(valor_nota.strip().replace('.','').replace(',','.'))
+            dados_formatados = self.utils.formatar_dados(dicionario)
         except ValueError:
             texto_feedback.configure(text='Erro ao cadastrar valor não informado', text_color='red')
             return
+        
+        quant = int(dicionario["Quantidade de Registros"].get())
 
-        if data_pag != '':
-            data_pag = data_pag.split('/')
-            data_pag = datetime(day=int(data_pag[0]),month=int(data_pag[1]), year=int(data_pag[2])).strftime("%Y-%m-%d")
-        
-        if data_fat != '':
-            data_fat = data_fat.split('/')
-            data_fat = datetime(day=int(data_fat[0]),month=int(data_fat[1]), year=int(data_fat[2])).strftime("%Y-%m-%d")
-        
+        #pegando os dados ja formatados
+        centro_custo = dados_formatados['Centro de Custo']
+        numero_nota = dados_formatados['Numero da Nota']
+        valor_nota = dados_formatados['Valor da Nota']
+        data_fat = dados_formatados['Data de Faturamento']
+        data_pag = dados_formatados['Data de Pagamento']
+        mes_ref = dados_formatados["Mês de Referência"]
+        ano_ref = dados_formatados['Ano de Referência']
+
+        if not self.db.verificar_centro_custo(centro_custo):
+            texto_feedback.configure(text='Erro ao cadastrar centro de custo não existe', text_color='red')
+            return
+
         try:
-            banco.inserir_nota(centro_custo,numero_nota,valor_nota,data_fat,data_pag)
+            self.db.inserir_nota(centro_custo,numero_nota,valor_nota,data_fat,data_pag,mes_ref,ano_ref)
             texto_feedback.configure(text='Nota cadastrada com sucesso!!', text_color='green')
-            quant_regs.set(str(quant - 1)) if quant > 1 else quant_regs.set('1')
+            self.utils.apagar_valores(dicionario,quant,nota=True)
         except IntegrityError:
             texto_feedback.configure(text='Erro ao cadastrar nota', text_color='red')
 
-def cadastrar_cliente(texto_feedback, dicionario,quant_regs):
-        
-        quant = int(quant_regs.get())
-    
-        cliente = dicionario['Cliente'].get()
-        dicionario['Cliente'].delete(0,'end') if quant <= 1 else ...
-        
-        centro_custo = dicionario['Centro de Custo'].get()
-        dicionario['Centro de Custo'].delete(0,'end')
-        
-        descricao = dicionario['Descrição'].get()
-        dicionario['Descrição'].delete(0,'end') if quant <= 1 else ...
+    def cadastrar_cliente(self, texto_feedback: CTkLabel, dicionario: dict) -> None:
+        """
+        Cadastra um cliente no banco de dados.
 
-        cliente = cliente.strip()
-        centro_custo = centro_custo.strip()
+        param:
+            texto_feedback(CTkLabel): Label para exibir mensagens de feedback ao usuário.
+            dicionario(dict): Dicionário contendo os dados do cliente a serem cadastrados.
+        """
+        dados_formatados = self.utils.formatar_dados(dicionario)
+
+        quant = int(dicionario["Quantidade de Registros"].get())
+        
+        #pegando os dados ja formatados
+        cliente = dados_formatados['Cliente']
+        centro_custo = dados_formatados['Centro de Custo']
+        descricao = dados_formatados['Descrição']
+        tipo = dados_formatados["Tipo de Cliente"]
+
         if centro_custo == '':
             texto_feedback.configure(text='Centro de custo está vazio', text_color='red')
             return
-        
-        descricao = descricao.strip()
+
         try:
-            banco.inserir_cliente(cliente,centro_custo,descricao)
+            self.db.inserir_cliente(cliente,centro_custo,descricao,tipo)
             texto_feedback.configure(text='Cliente cadastrado com sucesso!!', text_color='green')
-            quant_regs.set(str(quant - 1)) if quant > 1 else quant_regs.set('1')
+            self.utils.apagar_valores(dicionario,quant,cliente=True)
         except IntegrityError:
             texto_feedback.configure(text='Centro de custo já cadastrado', text_color='red')
 
-def botao_pagina(janela, pagina,coluna,linha,func, disable = False):
-    if disable:
-        botao = ctk.CTkButton(janela,text=str(pagina+1), command=lambda:func(pagina,janela),state="disabled", fg_color="gray")
-        botao.grid(column=coluna,row=linha, pady=10)
-        return
-    
-    botao = ctk.CTkButton(janela,text=str(pagina+1), command=lambda:func(pagina,janela))
-    botao.grid(column=coluna,row=linha, pady=10)
+    def retirar_clientes(self, pagina: int) -> list[list]:
+        """
+        Recupera a lista de clientes cadastrados.
 
+        param:
+            pagina(int): Número da página de registros a ser recuperada.
+        return: 
+            (list[list]): Lista contendo a lista de dados dos clientes.
+        """
+        return self.db.retirar_clientes(pagina)
 
-def limpar(janela):
-    contador = 0
-    for componente in janela.winfo_children():
-        if isinstance(componente,ctk.CTkLabel):
-            componente.destroy()
-        elif contador > 3 and isinstance(componente,ctk.CTkButton):
-            componente.destroy()
+    def contar_pagina(self, cliente: bool = False, notas: bool = False, all: bool = False) -> int:
+        """
+        Conta o número de páginas disponíveis para clientes, notas ou todos os registros.
+
+        param:
+            cliente(bool): Se True, conta páginas de clientes.
+            notas(bool): Se True, conta páginas de notas fiscais.
+            all(bool): Se True, conta todas as páginas de registros.
+        return: 
+            (int): Número total de páginas.
+        """
+        return self.db.contar_pagina(cliente=cliente, notas=notas, all=all)
+
+    def retirar_notas(self, pagina: int) -> list[list]:
+        """
+        Recupera a lista de notas fiscais cadastradas.
+
+        param: 
+            pagina(int): Número da página de registros a ser recuperada.
+        return: 
+            (list[list]): Lista contendo a lista de dados das notas fiscais.
+        """
+        return self.db.retirar_notas(pagina, remove_id=False)
+
+    def retirar_all(self, pagina: int) -> list[list]:
+        """
+        Recupera todos os registros disponíveis.
+
+        param: 
+            pagina(int): Número da página de registros a ser recuperada.
         
-        contador += 1
+        return: 
+            (list[list]): Lista contendo a Lista de dados mescados dos clientes e notas.
+        """
+        return self.db.retirar_all(pagina)
 
-def sair_fullscreen(janela):
-    janela.attributes("-fullscreen", False)
-    contador = 0
-    for componente in janela.winfo_children():
-        if isinstance(componente,ctk.CTkLabel):
-            componente.destroy()
-        elif contador > 2 and isinstance(componente,ctk.CTkButton):
-            componente.destroy()
-        
-        contador += 1
+    def modificar_cliente(self, dados: list[dict], texto_feedback: CTkLabel) -> None:
+        """
+        Modifica os dados de clientes cadastrados.
 
-def entrar_fullscreen(janela,coluna,linha):
-    # Deixando a janela em tela cheia
-    janela.attributes("-fullscreen", True)
+        param:
+            dados(list[dict]): Lista de dicionários contendo os novos dados dos clientes.
+            texto_feedback(CTkLabel)): Label para exibir mensagens de feedback ao usuário.
+        """
+        dado_error = []
+        for dado in dados:
             
-    # Botão para sair do modo fullscreen
-    botao_sair = ctk.CTkButton(janela, text="Sair do Fullscreen", command=lambda: sair_fullscreen(janela))
-    botao_sair.grid(column=coluna,row=linha, pady=10,padx=10)
+            dado_formatado = self.utils.formatar_dados(dado)
+            
+            #pegando os dados ja formatados
+            cliente = dado_formatado['Clientes']
+            centro_custo = dado_formatado["Centro de Custo"]
+            descricao = dado_formatado["Descrição"]
+            tipo = dado_formatado["Tipo"]
+            centro_custo_velho = dado_formatado['Centro de Custo Velho']
 
+            if centro_custo == '':
+                dado_error.append(dado_formatado)
+                texto_feedback.configure(text=f'Não foi possível alterar desses: {dado_error}', text_color='red')
+                continue
+            try:
+                self.db.modificar_cliente(cliente,centro_custo,descricao,tipo,centro_custo_velho)
+                texto_feedback.configure(text='Clientes alterados com sucesso!!', text_color='green')
+            except IntegrityError:
+                dado_error.append(dado_formatado)
+                texto_feedback.configure(text=f'Não foi possível alterar esses clientes: {dado_error}', text_color='red')
 
-def retirar_clientes(pagina,janela):
-    limpar(janela)
+    def modificar_nota(self, dados: list[dict], texto_feedback: CTkLabel) -> None:
+        """
+        Modifica os dados de notas fiscais cadastradas.
 
-    entrar_fullscreen(janela,3,0)
+        param:
+            dados(list[dict]): Lista de dicionários contendo os novos dados das notas.
+            texto_feedback(CTkLabel): Label para exibir mensagens de feedback ao usuário.
+        """
+        dado_error = []
+        for dado in dados:
+            try:
+                dado_formatado = self.utils.formatar_dados(dado)
+            except ValueError:
+                dado_error.append(dado_formatado)
+                texto_feedback.configure(text=f'Erro ao alterar essas notas: {dado_error}', text_color='red')
+                continue
+            
+            #pegando os dados ja formatados
+            id_nota =  int(dado_formatado['id'])
+            centro_custo = dado_formatado["Centro de Custo"]
+            numero_nota = dado_formatado["Numero da Nota"]
+            valor_nota = dado_formatado["Valor da Nota"]
+            data_fat = dado_formatado["Data de Faturamento"]
+            data_pag = dado_formatado["Data de Pagamento"]
+            mes_ref = dado_formatado["Mês de Referência"]
+            ano_ref = dado_formatado["Ano de Referência"]
 
-    dados = banco.retirar_clientes(pagina)
+            if centro_custo == '':
+                dado_error.append(dado_formatado)
+                texto_feedback.configure(text=f'Erro ao alterar essas notas: {dado_error}', text_color='red')
+                continue
+           
+            if not self.db.verificar_centro_custo(centro_custo):
+                dado_error.append(dado_formatado)
+                texto_feedback.configure(text=f'Erro ao alterar essas notas: {dado_error}', text_color='red')
+                continue
+            
+            try:
+                self.db.modificar_nota(id_nota,centro_custo,numero_nota,valor_nota,data_fat,data_pag,mes_ref,ano_ref)
+                texto_feedback.configure(text='Notas alteradas com sucesso!!', text_color='green')
 
-    colunas = ['Clientes',"Centro de Custo","Descrição"]
-    contador = 0
+            except IntegrityError:
+                dado_error.append(dado_formatado)
+                texto_feedback.configure(text=f'Erro ao alterar essas notas: {dado_error}', text_color='red')
 
-    for coluna in colunas:
-        col = ctk.CTkLabel(janela,text=coluna,font=("Arial", 16, "bold"))
-        col.grid(column=contador,row=1, pady=10,padx=10)
-
-        contador += 1
-    
-    linha = 2
-    coluna = 0
-    for dado in dados:
-        for campo in dado:
-            col = ctk.CTkLabel(janela,text=campo,font=("Arial", 16))
-            col.grid(column=coluna,row=linha, pady=10,padx=10)
-
-            coluna += 1
-        coluna = 0
-        linha += 1
-    
-    for n in range(banco.contar_pagina(cliente=True)):
-        if n == pagina:
-            botao_pagina(janela,n,coluna,linha+1,disable=True,func=retirar_clientes)
-            coluna += 1
-            continue
-        
-        botao_pagina(janela,n,coluna,linha+1,func=retirar_clientes)
-        coluna += 1
-
-
-def retirar_notas(pagina,janela):
-    limpar(janela)
-
-    entrar_fullscreen(janela,3,0)
-
-    dados = banco.retirar_notas(pagina)
-
-    colunas = ["Centro de Custo","Numero da Nota", "Valor da Nota", "Data de Faturamento", "Data de Pagamento"]
-    contador = 0
-
-    for coluna in colunas:
-        col = ctk.CTkLabel(janela,text=coluna,font=("Arial", 16, "bold"))
-        col.grid(column=contador,row=1, pady=10,padx=10)
-
-        contador += 1
-    
-    linha = 2
-    coluna = 0
-    for dado in dados:
-        for campo in dado:
-            col = ctk.CTkLabel(janela,text=campo,font=("Arial", 16))
-            col.grid(column=coluna,row=linha, pady=10,padx=10)
-
-            coluna += 1
-        coluna = 0
-        linha += 1
-    
-    coluna = 0
-    linha +=1 
-    for n in range(banco.contar_pagina(notas=True)):
-        if n == pagina:
-            botao_pagina(janela,n,coluna,linha,disable=True,func=retirar_notas)
-            coluna += 1
-            continue
-        
-        botao_pagina(janela,n,coluna,linha,func=retirar_notas)
-        coluna += 1
-
-
-def retirar_all(pagina,janela):
-    
-    limpar(janela)
-
-    entrar_fullscreen(janela,3,0)
-
-    dados = banco.retirar_all(pagina)
-
-    colunas = ['Clientes', "Valor da Nota","Centro de Custo", "Data de Faturamento", "Data de Pagamento", "Descrição"]
-    contador = 0
-
-    for coluna in colunas:
-        col = ctk.CTkLabel(janela,text=coluna,font=("Arial", 16, "bold"))
-        col.grid(column=contador,row=1, pady=10,padx=10)
-
-        contador += 1
-    
-    linha = 2
-    coluna = 0
-    for dado in dados:
-        for campo in dado:
-            col = ctk.CTkLabel(janela,text=campo,font=("Arial", 16))
-            col.grid(column=coluna,row=linha, pady=10,padx=10)
-
-            coluna += 1
-        coluna = 0
-        linha += 1
-    
-    for n in range(banco.contar_pagina(all=True)):
-        if n == pagina:
-            botao_pagina(janela,n,coluna,linha+1,disable=True,func=retirar_all)
-            coluna += 1
-            continue
-        
-        botao_pagina(janela,n,coluna,linha+1,func=retirar_all)
-        coluna += 1
-
-
-def pesquisar():
-     pass
+    def pesquisar(self):
+        pass
 
 if __name__ == '__main__':
     pass
