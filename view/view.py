@@ -1,5 +1,5 @@
 '''
-janela.py
+view.py
 
 modulo que estará contendo a classe que tem funções gráficas 
 do projeto, janelas, botões, campos de entrada e etc...
@@ -30,13 +30,13 @@ from config.utils import UtilsPro
 
 class App(ctk.CTk):
     """
-    Classe principal da aplicação, responsável por criar a janela principal e gerenciar
+    Classe da aplicação, responsável por criar a janela principal e gerenciar
     a navegação entre as diferentes telas secundárias.
     
     A classe inicializa a interface gráfica, configura os botões principais e define 
     as janelas secundárias para cadastro de clientes, adição de notas e geração de relatórios.
     """
-    def __init__(self,controller: ControllerPro)->None:
+    def __init__(self,controller: ControllerPro) -> None:
         '''
         Inicializa a inicialização da classe pai(CTk), e configura a janela principal
 
@@ -68,7 +68,7 @@ class App(ctk.CTk):
         self.mainloop()
 
     
-    def janela_cliente(self)->None:
+    def janela_cliente(self) -> None:
         """
         Cria uma janela secundária para o cadastro de clientes.
         
@@ -99,7 +99,7 @@ class App(ctk.CTk):
         texto_feedback = ctk.CTkLabel(janela,text='')
         texto_feedback.grid(column=1, row=6,pady=10,padx=10)
     
-    def janela_nota(self)->None:
+    def janela_nota(self) -> None:
         """
         Cria uma janela secundária para adicionar a nota.
         
@@ -133,7 +133,7 @@ class App(ctk.CTk):
         texto_feedback = ctk.CTkLabel(janela,text='')
         texto_feedback.grid(column=1, row=9,pady=10,padx=10)
 
-    def janela_relatorio(self)->None:
+    def janela_relatorio(self) -> None:
         """
         Cria uma janela secundária para gerar relatórios.
         
@@ -157,7 +157,7 @@ class App(ctk.CTk):
         self.criar_botao('Notas',lambda: self.retirar_notas(janela,0),1,0,janela)
         self.criar_botao('Ver Relatório',lambda: self.retirar_all(janela,0),2,0,janela)
 
-    def retirar_clientes(self,janela:ctk.CTk,pagina:int)->None:
+    def retirar_clientes(self,janela: ctk.CTk, pagina: int) -> None:
         """
         Cria uma tabela na janela.
         
@@ -242,14 +242,47 @@ class App(ctk.CTk):
             self.botao_pagina(janela,n,coluna,linha+1,func=self.retirar_clientes)
             coluna += 1
         
+        def popup_confirmacao() -> None:
+            """
+            Abre um popup para confirma se o usuário quer mesmo alterar os dados dos clientes.
+
+            """
+
+
+            #Criar uma nova janela (popup)
+            janela_popup = tk.Toplevel(janela)  
+            janela_popup.title("Alterar Dados")
+
+            #Traz a janela para frente e Mantém frente das demais janelas
+            janela_popup.focus()  
+            janela_popup.attributes("-topmost", True)
+
+            def aux_func():
+                '''
+                Função auxiliar para executar duas funções de uma vez
+                modificar os dados e fechar a janela de popup
+
+                '''
+                self.controller.modificar_cliente(alterar_dados,texto_feedback)
+                janela_popup.destroy()
+            
+            texto = ctk.CTkLabel(janela_popup,text='Tem certeza que deseja alterar os dados dos clientes ?')
+            texto.grid(column=0, row=0,pady=10,padx=10)
+
+            self.criar_botao("Alterar",aux_func,0,1,janela_popup)
+
+            botao = ctk.CTkButton(janela_popup,text="Não alterar", command=janela_popup.destroy,fg_color="red")
+            botao.grid(column=1,row=1, pady=10,padx=10)
+        
         #botão para alterar os dados
-        self.criar_botao('Alterar Dados', lambda:self.controller.modificar_cliente(alterar_dados,texto_feedback),0,linha+2,janela)
+        self.criar_botao('Alterar Dados',popup_confirmacao,0,linha+2,janela)
+
         
         #texto para retorna o sucesso ou a falha
         texto_feedback = ctk.CTkLabel(janela,text='')
         texto_feedback.grid(column=0, row=linha+3,pady=10,padx=10)
 
-    def retirar_notas(self,janela:ctk.CTk,pagina:int)->None:
+    def retirar_notas(self,janela: ctk.CTk, pagina: int) -> None:
         """
         Cria uma tabela na janela.
         
@@ -343,8 +376,40 @@ class App(ctk.CTk):
             self.botao_pagina(janela,n,coluna,linha,func=self.retirar_notas)
             coluna += 1
         
+        def popup_confirmacao() -> None:
+            """
+            Abre um popup para confirma se o usuário quer mesmo alterar os dados da nota.
+
+            """
+
+            def aux_func():
+                '''
+                Função auxiliar para executar duas funções de uma vez
+                modificar os dados e fechar a janela de popup
+
+                '''
+                self.controller.modificar_nota(alterar_dados,texto_feedback)
+                janela_popup.destroy()
+
+            #Criar uma nova janela (popup)
+            janela_popup = tk.Toplevel(janela)  
+            janela_popup.title("Alterar Dados")
+
+            #Traz a janela para frente e Mantém frente das demais janelas
+            janela_popup.focus()  
+            janela_popup.attributes("-topmost", True)
+
+            texto = ctk.CTkLabel(janela_popup,text='Tem certeza que deseja alterar os dados das notas ?')
+            texto.grid(column=0, row=0,pady=10,padx=10)
+
+            self.criar_botao("Alterar",aux_func,0,1,janela_popup)
+
+            botao = ctk.CTkButton(janela_popup,text="Não alterar", command=janela_popup.destroy,fg_color="red")
+            botao.grid(column=1,row=1, pady=10,padx=10)      
+        
         #botão para alterar os dados
-        self.criar_botao('Alterar Dados', lambda:self.controller.modificar_nota(alterar_dados,texto_feedback),0,linha+1,janela)
+        self.criar_botao('Alterar Dados', popup_confirmacao,0,linha+1,janela)
+        
         
         #texto para retorna o sucesso ou a falha
         texto_feedback = ctk.CTkLabel(janela,text='')
@@ -352,7 +417,7 @@ class App(ctk.CTk):
 
 
 
-    def retirar_all(self,janela:ctk.CTk,pagina:int)->None:
+    def retirar_all(self,janela: ctk.CTk, pagina: int) -> None:
         """
         Cria uma tabela na janela.
         
@@ -411,7 +476,7 @@ class App(ctk.CTk):
             coluna += 1
 
 
-    def botao_pagina(self,janela:ctk.CTk, pagina:int,coluna:int,linha:int,func:Callable[[],Callable[[int,ctk.CTk],None]], disable:bool = False):
+    def botao_pagina(self,janela: ctk.CTk, pagina: int, coluna: int, linha: int, func: Callable[[],Callable[[int,ctk.CTk],None]], disable: bool = False) -> None:
         """
         Cria um botão de paginação em uma interface gráfica utilizando CustomTkinter.
 
@@ -436,7 +501,7 @@ class App(ctk.CTk):
         botao = ctk.CTkButton(janela,text=str(pagina+1), command=lambda:func(janela,pagina))
         botao.grid(column=coluna,row=linha, pady=10)
 
-    def criar_botao(self,text:str,func:Callable[[],Callable],coluna:int,linha:int,janela:ctk.CTk) -> None:
+    def criar_botao(self,text: str, func: Callable[[],Callable], coluna: int, linha: int, janela: ctk.CTk) -> None:
         """
         Cria um botão em uma interface gráfica utilizando CustomTkinter.
 
@@ -454,7 +519,7 @@ class App(ctk.CTk):
         botao = ctk.CTkButton(janela,text=text, command=func)
         botao.grid(column=coluna,row=linha, pady=10,padx=10)
 
-    def criar_entry(self,texto:str,coluna:int,linha:int,janela:ctk.CTk,valor_padrao:str='') -> None:
+    def criar_entry(self,texto: str, coluna: int, linha: int, janela: ctk.CTk, valor_padrao: str ='') -> None:
         """
         Cria um campo de entrada (Entry) com um rótulo (Label) 
         em uma janela utilizando CustomTkinter.
@@ -485,7 +550,7 @@ class App(ctk.CTk):
         #adiciona ao dicionario
         self.entrys[texto] = campo
     
-    def criar_entrys(self,lista:list|tuple,coluna:int,linha:int,janela:ctk.CTk) -> None:
+    def criar_entrys(self,lista: list|tuple, coluna: int, linha: int, janela: ctk.CTk) -> None:
         """
         Cria mais de um campo de entrada (Entry) com seus respectivos 
         rótulo (Label) em uma janela utilizando CustomTkinter.
@@ -515,7 +580,7 @@ class App(ctk.CTk):
             contador += 1
     
 
-    def criar_entry_opcao(self,janela:ctk.CTk,coluna:int,linha:int, quantidade_opcao:int|list, texto:str) -> None:
+    def criar_entry_opcao(self,janela: ctk.CTk, coluna: int, linha: int, quantidade_opcao: int|list, texto: str) -> None:
         """
         Cria um campo de seleção (ComboBox) com um rótulo, permitindo a escolha entre diferentes opções.
 
@@ -567,7 +632,7 @@ class App(ctk.CTk):
         #adiciona ao dicionario
         self.entrys[texto] = entry
 
-    def criar_entry_data(self,janela:ctk.CTk,coluna:int,linha:int,text:str)->None:
+    def criar_entry_data(self,janela: ctk.CTk, coluna: int, linha: int, text: str) -> None:
         """
         Cria um campo de entrada para seleção de data, acompanhado de um botão para abrir um calendário.
 
@@ -581,7 +646,7 @@ class App(ctk.CTk):
             text(str): Texto do rótulo associado ao campo de entrada.
 
         """
-        def popup_calendario(entry:ctk.CTkEntry):
+        def popup_calendario(entry: ctk.CTkEntry) -> None:
             """
             Abre um popup com um calendário para selecionar uma data e insere a data escolhida no campo de entrada.
 

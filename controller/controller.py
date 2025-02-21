@@ -229,7 +229,7 @@ class ControllerPro:
                 dado_error.append(dado_formatado)
                 texto_feedback.configure(text=f'Erro ao alterar essas notas: {dado_error}', text_color='red')
 
-    def pesquisar(self):
+    def pesquisar(self, pesquisa: str, categoria: str):
         pass
 
 if __name__ == '__main__':

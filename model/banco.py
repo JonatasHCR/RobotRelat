@@ -19,19 +19,20 @@ DB_FILE = os.path.join(ROOT_DIR,DB_NAME)
 LIMIT_REGISTRO = 10
 
 class DatabasePro:
-    def __init__(self):
+
+    def __init__(self) -> None:
         self.criar_banco()
     
-    def conectar(self)->None:
+    def conectar(self) -> None:
         self.connection = sqlite3.connect(DB_FILE)
         self.cursor = self.connection.cursor()
     
-    def desconectar(self)->None:
+    def desconectar(self) -> None:
         self.cursor.close()
         self.connection.close()
         
 
-    def criar_banco(self)->None:
+    def criar_banco(self) -> None:
         try:
             self.conectar()
 
@@ -70,7 +71,7 @@ class DatabasePro:
         finally:
             self.desconectar()
 
-    def inserir_cliente(self,cliente:str,centro_de_custo:str,descricao:str,tipo:str)->None:
+    def inserir_cliente(self,cliente: str, centro_de_custo: str, descricao: str, tipo: str) -> None:
         try:
             self.conectar()
 
@@ -84,7 +85,7 @@ class DatabasePro:
         finally:
             self.desconectar()
 
-    def inserir_nota(self,centro_de_custo:str,numero_nota:str,valor:float,data_fat:str,data_pag:str,mes_ref:str,ano_ref:str):
+    def inserir_nota(self,centro_de_custo: str, numero_nota: str, valor: float, data_fat: str, data_pag: str, mes_ref: str, ano_ref: str) -> None:
         try:
             self.conectar()
 
@@ -98,7 +99,7 @@ class DatabasePro:
         finally:
             self.desconectar()
 
-    def verificar_centro_custo(self,centro_custo:str)->bool:
+    def verificar_centro_custo(self,centro_custo: str) -> bool:
         try:
             self.conectar()
         
@@ -110,7 +111,7 @@ class DatabasePro:
 
         finally:
             self.desconectar()
-    def contar_pagina(self,all:bool=False,cliente:bool=False,notas:bool=False)->int:
+    def contar_pagina(self,all: bool = False, cliente: bool = False, notas: bool = False) -> int:
         try:
             self.conectar()
 
@@ -133,7 +134,7 @@ class DatabasePro:
         finally:
             self.desconectar
 
-    def retirar_clientes(self,pagina_atual:int)->list[list]:
+    def retirar_clientes(self,pagina_atual: int) -> list[list]:
         try:
             self.conectar()
             
@@ -146,7 +147,7 @@ class DatabasePro:
         finally:
             self.desconectar()
 
-    def retirar_notas(self,pagina_atual:int,remove_id:bool = True)->list[list]:
+    def retirar_notas(self,pagina_atual: int, remove_id: bool = True) -> list[list]:
         try:
             self.conectar()
             
@@ -167,7 +168,7 @@ class DatabasePro:
             self.desconectar
 
 
-    def retirar_all(self,pagina_atual:int)->list[list]:
+    def retirar_all(self,pagina_atual: int) -> list[list]:
         try:
             self.conectar()
             
@@ -198,7 +199,7 @@ class DatabasePro:
         finally:
             self.desconectar()
 
-    def modificar_cliente(self,cliente:str,centro_de_custo:str,descricao:str,tipo:str,centro_de_custo_velho:str)->None:
+    def modificar_cliente(self,cliente: str, centro_de_custo: str, descricao: str, tipo: str, centro_de_custo_velho: str) -> None:
         try:
             self.conectar()
             
@@ -212,7 +213,7 @@ class DatabasePro:
         finally:
             self.desconectar()
 
-    def modificar_nota(self,id:int,centro_de_custo:str,numero_nota:str,valor:float,data_fat:str,data_pag:str,mes_ref:str,ano_ref:str)->None:
+    def modificar_nota(self,id: int, centro_de_custo: str, numero_nota: str, valor: float, data_fat: str, data_pag: str, mes_ref: str, ano_ref: str) -> None:
         
         try:
             self.conectar()
@@ -225,5 +226,34 @@ class DatabasePro:
             self.connection.commit()
         finally:
             self.desconectar()
+
+    def deletar_nota(self, id: int) -> None:
+        try:
+            self.conectar()
+
+            self.cursor.execute("DELETE FROM notas WHERE id = ?", (id,))
+
+            self.connection.commit()
+        finally:
+            self.desconectar()
+
+    def deletar_cliente(self, centro_de_custo: str):
+        try:
+            self.conectar()
+
+            self.cursor.execute("DELETE FROM clientes WHERE id = ?", (centro_de_custo,))
+
+            self.connection.commit()
+        finally:
+            self.desconectar()
+
+
+    def pesquisar(self):
+        try:
+            self.conectar()
+        finally:
+            self.desconectar()
+
+
 if __name__ == '__main__':
     banco = DatabasePro()
