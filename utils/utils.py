@@ -5,9 +5,19 @@ modulo que estará contendo a classe com funções auxiliares,
 listas, entre outras ajudas para o projeto.
 
 '''
+import os
+import sys
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
+sys.path.insert(0,PROJECT_ROOT)
+
 
 from datetime import datetime
 import customtkinter as ctk
+
+from model.nota import Nota
+from model.cliente import Cliente
+from config.logger import LoggerPro
 
 class UtilsPro:
     """
@@ -26,46 +36,49 @@ class UtilsPro:
             'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
         ]
 
-        self.colunas_clientes = ['Clientes', "Centro de Custo", "Tipo", "Descrição"]
+        self.colunas_clientes = ['Nome', "Centro de Custo", "Tipo", "Descrição"]
 
         self.colunas_notas = [
-            "Centro de Custo", "Numero da Nota", "Valor da Nota", "Data de Faturamento", 
+            "Id", "Centro de Custo", "Numero da Nota", "Valor da Nota", "Data de Faturamento", 
             "Data de Pagamento", "Mês de Referência", "Ano de Referência"
         ]
 
         self.colunas_all = [
-            'Clientes', "Tipo", "Valor da Nota", "Centro de Custo", 
+            'Nome', "Tipo", "Valor da Nota", "Centro de Custo", 
             "Data de Faturamento", "Data de Pagamento", "Descrição"
         ]
 
         self.tipo_cliente = ["Consórcio", "Próprio"]
 
-    def formatar_dados(self, dicionario: dict) -> dict:
+        self.logger = LoggerPro()
+
+    def formatar_cliente(self, cliente: Cliente) -> Cliente:
+        cliente.nome = str(cliente.nome).strip()
+        cliente.cc = str(cliente.cc).strip()
+        cliente.tipo = str(cliente.tipo).strip()
+        cliente.descricao = str(cliente.descricao).strip()
+
+        return cliente
+
+    def formatar_nota(self, nota: Nota) -> Nota:
         """
         Formata os valores de um dicionário, convertendo datas e valores monetários.
 
         param:
-            dicionario(dict): Dicionário contendo os dados a serem formatados.
+            nota(Nota): Dicionário contendo os dados a serem formatados.
         
         return
-            (dict): Dicionário com os dados formatados.
+            (Nota): Dicionário com os dados formatados.
         """
-        dict_dados = dict()
+        nota.cc = str(nota.cc).strip()
+        nota.numero_nota = str(nota.numero_nota).strip()
+        nota.valor_nota = self.formatar_dinheiro(str(nota.valor_nota))
+        nota.data_fat = self.formatar_data(str(nota.data_fat))
+        nota.data_pag = self.formatar_data(str(nota.data_pag))
+        nota.mes_ref = str(nota.mes_ref).strip()
+        nota.ano_ref = str(nota.ano_ref).strip()
 
-        for chave, dado in dicionario.items():
-            dado = str(dado.get())#pegando o dado do campo de entrada
-    
-            match chave:
-                case 'Valor da Nota':
-                    dinheiro = self.formatar_dinheiro(dado)
-                    dict_dados[chave] = dinheiro
-                case 'Data de Faturamento' | 'Data de Pagamento':
-                    data = self.formatar_data(dado)
-                    dict_dados[chave] = data
-                case _:
-                    dict_dados[chave] = dado.strip()
-
-        return dict_dados
+        return nota
 
     def formatar_dinheiro(self, dinheiro: str) -> float:
         """
@@ -81,11 +94,16 @@ class UtilsPro:
             ValueError: Se a conversão falhar.
         """
         valor = dinheiro.strip()
+        if valor == "":
+            self.logger.mensagem_error("Valor da Nota não pode estar em branco")
+            raise ValueError("Valor da Nota não pode estar em branco")
+
         try:
             valor = valor.replace('R$', '').replace('.', '').replace(',', '.')
             return float(valor.strip())
         except ValueError:
-            raise ValueError("Erro ao converter valor")
+            self.logger.mensagem_error("Erro ao converter valor da nota verifique se existe uma letra presente")
+            raise ValueError("Erro ao converter valor da nota verifique se existe uma letra presente")
 
     def formatar_data(self, data: str) -> str:
         """
@@ -97,22 +115,40 @@ class UtilsPro:
         return: 
             (str): Data formatada como string.
         """
-        data_for = data
-
         try:
-            if data_for:
-                data_for = data_for.split('/')
-                data_for = datetime(
-                    day=int(data_for[0]), month=int(data_for[1]), year=int(data_for[2])
-                ).strftime("%Y-%m-%d")
-        except ValueError:
-            data_for = data.split('-')
-            data_for = datetime(
-                int(data_for[0]), int(data_for[1]), int(data_for[2])
-            ).strftime("%d/%m/%Y")
-            return self.formatar_data(data_for)
+            data = data.strip()
+            if data == '':
+                return data
+            else:
+                data_for = datetime.strptime(data,"%d/%m/%Y")
+                data_for = data_for.strftime("%Y-%m-%d")
 
-        return data_for
+                return data_for
+        except ValueError:
+            try:
+                data_for = datetime.strptime(data,"%Y-%m-%d")
+                data_for = data_for.strftime("%Y-%m-%d")
+                
+                return data_for
+            except ValueError:
+                self.logger.mensagem_error("Formato da Data invalido, use somente DD/MM/AA ou AA-MM-DD")
+                raise ValueError
+
+    
+    def validar_data(self,nota: Nota) -> bool:
+        try:
+            if datetime.strptime(nota.data_fat,"%Y-%m-%d") > datetime.strptime(nota.data_pag,"%Y-%m-%d"):
+                return False
+        except ValueError:
+            try:
+                if datetime.strptime(nota.data_fat,"%d/%m/%Y") > datetime.strptime(nota.data_pag,"%d/%m/%Y"):
+                    return False
+            except ValueError:
+                self.logger.mensagem_error("Formato da Data invalido, use somente DD/MM/AA ou AA-MM-DD")
+                return False
+        
+        return True
+        
 
     def apagar_valores(self, dicionario: dict, quant: int, cliente: bool = False, nota: bool = False) -> None:
         """

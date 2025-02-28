@@ -1,9 +1,9 @@
 '''
 Pacote model
 
-Feito com os principais métodos do projeto envolvendo banco 
-de dados ao longo do projeto, bem como o próprio banco de dados
+Feito com as classes que representam tabelas do banco de dados 
 
 Subpacotes:
-    banco.py: Gera o banco, e faz o controle(CRUD)
+    clientes.py: representa a tabela clientes
+    notas.py: representa a tabela notas
 '''
