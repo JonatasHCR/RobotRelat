@@ -67,7 +67,11 @@ class ViewNota:
         janela.focus()  
         janela.attributes("-topmost", True)
 
-    def janela_form(self,janela_main: ctk.CTk) -> None:
+        self.components.criar_botao("Cadastrar",self.janela_form,0,0,janela)
+        self.components.criar_botao("Alterar",self.janela_alterar,1,0,janela)
+        self.components.criar_botao("Relatório",self.janela_relatorio,2,0,janela)
+
+    def janela_form(self) -> None:
         """
         Cria uma janela secundária para adicionar a nota.
         
@@ -76,29 +80,20 @@ class ViewNota:
 
         #Limpando o dicionario de campos
         self.entrys = dict()
-
-        #Configuração da janela
-        janela = ctk.CTkToplevel(janela_main)
-        #janela.geometry("600x500")
-        janela.title("Cadastro Nota")
-
-        #Traz a janela para frente e Mantém frente das demais janelas
-        janela.focus()  
-        janela.attributes("-topmost", True)
         
         #Criando os campos de entradas(tem tipos diferentes, seleção , entrada de data, e normal)
-        self.components.criar_entry_opcao(janela,0,0,20,"Quantidade de Registros")
-        self.components.criar_entrys(['Centro de Custo', 'Numero da Nota', 'Valor da Nota'],0,1,janela)
-        self.components.criar_entry_data(janela,0,4,'Data de Faturamento')
-        self.components.criar_entry_data(janela,0,5,'Data de Pagamento')
-        self.components.criar_entry_opcao(janela,0,6,self.utils.MESES,"Mês de Referência")
-        self.components.criar_entry('Ano de Referência',0,7,janela,self.utils.pegar_ano_atual())
+        self.components.criar_entry_opcao(self,0,0,20,"Quantidade de Registros")
+        self.components.criar_entrys(['Centro de Custo', 'Numero da Nota', 'Valor da Nota'],0,1,self)
+        self.components.criar_entry_data(self,0,4,'Data de Faturamento')
+        self.components.criar_entry_data(self,0,5,'Data de Pagamento')
+        self.components.criar_entry_opcao(self,0,6,self.utils.MESES,"Mês de Referência")
+        self.components.criar_entry('Ano de Referência',0,7,self,self.utils.pegar_ano_atual())
 
         #botão de envio
-        self.components.criar_botao('Enviar',lambda: self.controller.cadastrar_nota(texto_feedback,self.entrys),1,8,janela)
+        self.components.criar_botao('Enviar',lambda: self.controller.cadastrar_nota(texto_feedback,self.entrys),1,8,self)
 
         #texto para retorna o sucesso ou a falha
-        texto_feedback = ctk.CTkLabel(janela,text='')
+        texto_feedback = ctk.CTkLabel(self,text='')
         texto_feedback.grid(column=1, row=9,pady=10,padx=10)
 
     def janela_relatorio(self) -> None:
