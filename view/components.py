@@ -22,7 +22,7 @@ from tkcalendar import Calendar
 #importação para tipagem
 from typing import Callable
 
-class ViewComponents(ctk.CTk):
+class ViewComponents:
     """
     Classe da aplicação, responsável por criar a janela principal e gerenciar
     a navegação entre as diferentes telas secundárias.
@@ -37,9 +37,8 @@ class ViewComponents(ctk.CTk):
         param: 
             controller: Instância do controlador que gerencia as operações do sistema.
         '''
+        pass
         
-        #Inicializando a classe pai
-        super().__init__()
         
     def botao_pagina(self,janela: ctk.CTk, pagina: int, coluna: int, linha: int, func: Callable[[],Callable[[int,ctk.CTk],None]], disable: bool = False) -> None:
         """

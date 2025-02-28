@@ -17,15 +17,13 @@ sys.path.insert(0,PROJECT_ROOT)
 #importações para fazer a parte 
 # gráfica do projeto
 import customtkinter as ctk
-from tkcalendar import Calendar
-import tkinter as tk
-
-#importação para tipagem
-from typing import Callable
 
 #importações para funcionamento da classe
 from controller.controller import ControllerPro
 from utils.utils import UtilsPro
+from view.view_cliente import ViewCliente
+from view.view_nota import ViewNota
+from view.components import ViewComponents
 
 
 class App(ctk.CTk):
@@ -50,6 +48,9 @@ class App(ctk.CTk):
         #Inicializando o controlado e utilitários
         self.controller = controller
         self.utils = UtilsPro()
+        self.client = ViewCliente()
+        self.nota = ViewNota()
+        self.components = ViewComponents()
 
         #Dicionario para armazenar os campos de entradas
         self.entrys = dict()
@@ -60,9 +61,9 @@ class App(ctk.CTk):
         #self.geometry('200x200')
 
         #criação dos botões principais
-        self.criar_botao('Cadastrar Cliente',self.janela_cliente,0,0,self)
-        self.criar_botao('Adicionar Nota',self.janela_nota,0,1,self)
-        self.criar_botao('Gerar Relatório',self.janela_relatorio,0,3,self)
+        self.components.criar_botao('Cliente',lambda: self.client.janela_form(self),0,0,self)
+        self.components.criar_botao('Nota',lambda: self.nota.janela_form(self),0,1,self)
+        self.components.criar_botao('Relatório',self.janela_relatorio,0,3,self)
 
         #Mantém a aplicação rodando
         self.mainloop()

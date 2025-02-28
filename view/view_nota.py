@@ -24,7 +24,7 @@ from view.components import ViewComponents
 from utils.utils import UtilsPro
 
 
-class ViewNota(ctk.CTk):
+class ViewNota:
     """
     Classe da aplicação, responsável por criar a janela principal e gerenciar
     a navegação entre as diferentes telas secundárias.
@@ -39,10 +39,7 @@ class ViewNota(ctk.CTk):
         param: 
             controller: Instância do controlador que gerencia as operações do sistema.
         '''
-        
-        #Inicializando a classe pai
-        super().__init__()
-        
+            
         #Inicializando o controlado e utilitários
         self.controller = ControllerNota()
         self.components = ViewComponents()
@@ -51,6 +48,25 @@ class ViewNota(ctk.CTk):
         #Dicionario para armazenar os campos de entradas
         self.entrys = dict()
     
+    def janela(self,janela_main: ctk.CTk) -> None:
+        """
+        Cria uma janela secundária para adicionar a nota.
+        
+        A janela contém campos para inserir informações da nota e um botão para envio dos dados.
+        """
+
+        #Limpando o dicionario de campos
+        self.entrys = dict()
+
+        #Configuração da janela
+        janela = ctk.CTkToplevel(janela_main)
+        #janela.geometry("600x500")
+        janela.title("Janela Nota")
+
+        #Traz a janela para frente e Mantém frente das demais janelas
+        janela.focus()  
+        janela.attributes("-topmost", True)
+
     def janela_form(self,janela_main: ctk.CTk) -> None:
         """
         Cria uma janela secundária para adicionar a nota.

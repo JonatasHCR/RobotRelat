@@ -23,7 +23,7 @@ from controller.controller_cliente import ControllerCliente
 from utils.utils import UtilsPro
 
 
-class ViewCliente(ctk.CTk):
+class ViewCliente:
     """
     Classe da aplicação, responsável por criar a janela principal e gerenciar
     a navegação entre as diferentes telas secundárias.
@@ -39,9 +39,6 @@ class ViewCliente(ctk.CTk):
             controller: Instância do controlador que gerencia as operações do sistema.
         '''
         
-        #Inicializando a classe pai
-        super().__init__()
-        
         #Inicializando o controlado e utilitários
         self.controller = ControllerCliente()
         self.utils = UtilsPro()
@@ -49,7 +46,7 @@ class ViewCliente(ctk.CTk):
         #Dicionario para armazenar os campos de entradas
         self.entrys = dict()
 
-    def janela_form(self) -> None:
+    def janela_form(self, janela_main: ctk.CTk) -> None:
         """
         Cria uma janela secundária para o cadastro de clientes.
         
