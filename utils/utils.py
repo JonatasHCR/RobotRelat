@@ -36,10 +36,10 @@ class UtilsPro:
             'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
         ]
 
-        self.colunas_clientes = ['Nome', "Centro de Custo", "Tipo", "Descrição"]
+        self.colunas_clientes = ["id",'Nome', "Centro de Custo", "Tipo", "Descrição"]
 
         self.colunas_notas = [
-            "Id", "Centro de Custo", "Numero da Nota", "Valor da Nota", "Data de Faturamento", 
+            "id", "Centro de Custo", "Numero da Nota", "Valor da Nota", "Data de Faturamento", 
             "Data de Pagamento", "Mês de Referência", "Ano de Referência"
         ]
 
@@ -136,12 +136,14 @@ class UtilsPro:
 
     
     def validar_data(self,nota: Nota) -> bool:
+        if nota.data_pag == '':
+            return True
         try:
-            if datetime.strptime(nota.data_fat,"%Y-%m-%d") > datetime.strptime(nota.data_pag,"%Y-%m-%d"):
+            if datetime.strptime(nota.data_fat,"%Y-%m-%d") < datetime.strptime(nota.data_pag,"%Y-%m-%d"):
                 return False
         except ValueError:
             try:
-                if datetime.strptime(nota.data_fat,"%d/%m/%Y") > datetime.strptime(nota.data_pag,"%d/%m/%Y"):
+                if datetime.strptime(nota.data_fat,"%d/%m/%Y") < datetime.strptime(nota.data_pag,"%d/%m/%Y"):
                     return False
             except ValueError:
                 self.logger.mensagem_error("Formato da Data invalido, use somente DD/MM/AA ou AA-MM-DD")
@@ -200,29 +202,6 @@ class UtilsPro:
                 componente.destroy()
 
             contador += 1
-
-    def sair_fullscreen(self, janela: ctk.CTk) -> None:
-        """
-        Sai do modo tela cheia e limpa a interface.
-
-        param 
-            janela(CTk): A janela que sairá do modo fullscreen.
-        """
-        janela.attributes("-fullscreen", False)
-        self.limpar(janela)
-
-    def entrar_fullscreen(self, janela: ctk.CTk, coluna: int, linha: int) -> None:
-        """
-        Entra no modo tela cheia e adiciona um botão para sair desse modo.
-
-        param:
-            janela(CTk): A janela que entrará em tela cheia.
-            coluna(int): Posição da coluna para o botão de saída.
-            linha(int): Posição da linha para o botão de saída.
-        """
-        janela.attributes("-fullscreen", True)
-        botao_sair = ctk.CTkButton(janela, text="Sair do Fullscreen", command=lambda: self.sair_fullscreen(janela))
-        botao_sair.grid(column=coluna, row=linha, pady=10, padx=10)
 
     def pegar_mes_atual(self) -> int:
         """

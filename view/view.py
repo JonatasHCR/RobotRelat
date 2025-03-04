@@ -61,12 +61,34 @@ class App(ctk.CTk):
         #self.geometry('200x200')
 
         #criação dos botões principais
-        self.components.criar_botao('Cliente',lambda: self.client.janela_form(self),0,0,self)
-        self.components.criar_botao('Nota',lambda: self.nota.janela_form(self),0,1,self)
+        self.components.criar_botao('Cliente',lambda: self.client.janela(self),0,0,self)
+        self.components.criar_botao('Nota',lambda: self.nota.janela(self),0,1,self)
         self.components.criar_botao('Relatório',self.janela_relatorio,0,3,self)
 
         #Mantém a aplicação rodando
         self.mainloop()
+    
+    def janela_relatorio(self) -> None:
+        """
+        Cria uma janela secundária para gerar relatórios.
+        
+        A janela contém botões gera campos para ver e alterar informações das notas e clientes
+        """
+
+        #Limpando o dicionario de campos e a janela
+        self.components.entrys = dict()
+        self.utils.limpar(self.janela_secundaria)
+
+        #botões para ver e alterar dados
+        self.components.criar_botao('Gerar Relatório',"fazenddooo",3,0,self.janela_secundaria)
+        
+        entry_mes = ctk.CTkComboBox(self.janela_secundaria,values=self.utils.MESES)
+        entry_mes.set(self.utils.MESES[self.utils.pegar_mes_atual()])
+        entry_mes.grid(column=4, row=0,pady=10,padx=10)
+
+        entry_ano = ctk.CTkEntry(self.janela_secundaria)
+        entry_ano.insert(0,str(self.utils.pegar_ano_atual()))
+        entry_mes.grid(column=5, row=0,pady=10,padx=10)
 
 if __name__ == '__main__':
     #inicio()

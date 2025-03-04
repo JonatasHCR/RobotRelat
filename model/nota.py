@@ -44,3 +44,7 @@ class Nota:
     def __str__(self):
 
         return f"{self.cc}|{self.numero_nota}|R$ {str(self.valor_nota).replace('.',',')}|{self.data_fat}|{self.data_pag}|{self.mes_ref}|{self.ano_ref}"
+    
+if __name__ == "__main__":
+    teste = Nota(1,'teste', "515151",14.56,'','', "JAN","2006")
+    print(teste.__dict__.items())

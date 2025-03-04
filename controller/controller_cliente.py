@@ -56,7 +56,7 @@ class ControllerCliente:
         quant = int(dicionario["Quantidade de Registros"].get())
         
         #pegando os dados ja formatados
-        nome = dicionario['Cliente'].get()
+        nome = dicionario['Nome'].get()
         centro_custo = dicionario['Centro de Custo'].get()
         descricao = dicionario['Descrição'].get()
         tipo = dicionario["Tipo de Cliente"].get()
@@ -108,7 +108,7 @@ class ControllerCliente:
             
             #pegando os dados
             id = dado['id'].get()
-            nome = dado['Clientes'].get()
+            nome = dado['Nome'].get()
             centro_custo = dado["Centro de Custo"].get()
             descricao = dado["Descrição"].get()
             tipo = dado["Tipo"].get()
@@ -121,7 +121,7 @@ class ControllerCliente:
             except (IntegrityError,ValueError):
                 dado_error.append(cliente)
         
-        if dado_error.count() > 0:
+        if len(dado_error) > 0:
             texto_feedback.configure(text=f'Não foi possível alterar esses clientes: {dado_error}', text_color='red')
         else:
             texto_feedback.configure(text='Clientes alterados com sucesso!!', text_color='green')

@@ -18,6 +18,9 @@ sys.path.insert(0,PROJECT_ROOT)
 # gráfica do projeto
 import customtkinter as ctk
 from tkcalendar import Calendar
+from datetime import datetime
+
+from utils.utils import UtilsPro
 
 #importação para tipagem
 from typing import Callable
@@ -37,39 +40,15 @@ class ViewComponents:
         param: 
             controller: Instância do controlador que gerencia as operações do sistema.
         '''
-        pass
+        self.entrys = dict()
+        self.utils = UtilsPro()
         
-        
-    def botao_pagina(self,janela: ctk.CTk, pagina: int, coluna: int, linha: int, func: Callable[[],Callable[[int,ctk.CTk],None]], disable: bool = False) -> None:
-        """
-        Cria um botão de paginação em uma interface gráfica utilizando CustomTkinter.
-
-        O botão exibe o número da página e executa a função fornecida ao ser clicado.
-        Se `disable` for True, o botão será desativado e ficará com a cor cinza.
-
-        param:
-            janela(CTk): Janela onde o botão será adicionado.
-            pagina(int): Número da página exibido no botão.
-            coluna(int): Posição da coluna na grade da interface.
-            linha(int): Posição da linha na grade da interface.
-            func(Callable): Função a ser chamada ao clicar no botão. Deve aceitar dois parâmetros: a janela e o número da página.
-            disable(bool): Se True, desabilita o botão e altera sua aparência (padrão: False).
-
-        """
-        #verificando se é pra desabilitar
-        if disable:
-            botao = ctk.CTkButton(janela,text=str(pagina+1), command=lambda:func(pagina,janela),state="disabled", fg_color="gray")
-            botao.grid(column=coluna,row=linha, pady=10)
-            return
-        
-        botao = ctk.CTkButton(janela,text=str(pagina+1), command=lambda:func(janela,pagina))
-        botao.grid(column=coluna,row=linha, pady=10)
-
-    def criar_botao(self,text: str, func: Callable[[],Callable], coluna: int, linha: int, janela: ctk.CTk) -> None:
+    def criar_botao(self,text: str, func: Callable[[],Callable], coluna: int, linha: int, janela: ctk.CTk, disable: bool = False) -> None:
         """
         Cria um botão em uma interface gráfica utilizando CustomTkinter.
 
         O botão exibe o texto fornecido e executa a função fornecida ao ser clicado.
+        Se `disable` for True, o botão será desativado e ficará com a cor cinza.
 
         param:
             text(str): texto a ser exibido no botão
@@ -77,11 +56,16 @@ class ViewComponents:
             coluna(int): Posição da coluna na grade da interface.
             linha(int): Posição da linha na grade da interface.
             janela(CTk): Janela onde o botão será adicionado.
+            disable(bool): Se True, desabilita o botão e altera sua aparência (padrão: False).
         """
 
         #criando o botão
-        botao = ctk.CTkButton(janela,text=text, command=func)
-        botao.grid(column=coluna,row=linha, pady=10,padx=10)
+        if disable:
+            botao = ctk.CTkButton(janela,text=text, command=func,state="disabled", fg_color="gray")
+            botao.grid(column=coluna,row=linha, pady=10,padx=10)
+        else:
+            botao = ctk.CTkButton(janela,text=text, command=func)
+            botao.grid(column=coluna,row=linha, pady=10,padx=10)
 
     def criar_entry(self,texto: str, coluna: int, linha: int, janela: ctk.CTk, valor_padrao: str ='') -> None:
         """
@@ -226,6 +210,11 @@ class ViewComponents:
                 """
                 entry.delete(0, "end")  # Limpa o campo antes de inserir a nova data
                 entry.insert(0, calendario.get_date())  # Insere a data selecionada
+                if text == 'Data de Faturamento':
+                    data = datetime.strptime(calendario.get_date(),"%d/%m/%Y")
+                    self.entrys["Mês de Referência"].set(self.utils.MESES[data.month - 1])
+                    self.entrys["Ano de Referência"].delete(0, "end")
+                    self.entrys["Ano de Referência"].insert(0, str(data.year))
                 janela_popup.destroy()  # Fecha o popup
 
             #Criar uma nova janela (popup)

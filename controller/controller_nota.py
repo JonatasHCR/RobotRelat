@@ -30,7 +30,7 @@ class ControllerNota:
     Classe responsável pelo controle das operações do sistema financeiro.
 
     Atua como intermediária entre a interface gráfica e o banco de dados,
-    realizando operações como cadastro, modificação e recuperação de clientes e notas fiscais.
+    realizando operações como cadastro, modificação e recuperação de notas e notas fiscais.
     """
 
     def __init__(self):
@@ -117,11 +117,13 @@ class ControllerNota:
             
             try:
                 self.service.modificar(nota)
-                texto_feedback.configure(text='Notas alteradas com sucesso!!', text_color='green')
-
-            except IntegrityError:
+            except (IntegrityError,ValueError):
                 dado_error.append(nota)
-                texto_feedback.configure(text=f'Erro ao alterar essas notas: {dado_error}', text_color='red')
+        
+        if len(dado_error) > 0:
+            texto_feedback.configure(text=f'Não foi possível alterar essas notas: {dado_error}', text_color='red')
+        else:
+            texto_feedback.configure(text='notas alteradas com sucesso!!', text_color='green')
     
     def deletar(self,nota: Nota) -> None:
         self.service.deletar(nota)

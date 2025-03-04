@@ -126,7 +126,7 @@ class RepositoryNota:
             return notas
                     
         finally:
-            self.desconectar
+            self.desconectar()
 
     def modificar(self,nota: Nota) -> None:
         

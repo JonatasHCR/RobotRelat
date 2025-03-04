@@ -44,7 +44,12 @@ class ServiceNota:
         nota = self.formatar(nota)
         
         if self.validar(nota):
-            self.repository.inserir(nota)
+            if nota.numero_nota != '':
+                self.repository.inserir(nota)
+            else:
+                self.logger.mensagem_error("Numero da Nota não pode estar em branco")
+                raise ValueError("Error ao Cadastrar a nota")
+
         else:
             raise ValueError("Error ao Cadastrar a nota")
 
