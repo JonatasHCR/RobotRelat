@@ -201,9 +201,11 @@ class ViewNota:
 
                 '''
                 self.controller.modificar(alterar_dados,texto_feedback)
+                janela.attributes("-topmost", True)
                 janela_popup.destroy()
 
             #Criar uma nova janela (popup)
+            janela.attributes("-topmost", False)
             janela_popup = ctk.CTkToplevel(janela)  
             janela_popup.title("Alterar Dados")
 
@@ -310,7 +312,10 @@ class ViewNota:
 
                 '''
                 self.controller.deletar(nota)
+                janela.attributes("-topmost", True)
                 janela_popup.destroy()
+            
+            janela.attributes("-topmost", False)
 
             #Criar uma nova janela (popup)
             janela_popup = ctk.CTkToplevel(janela)  

@@ -215,9 +215,11 @@ class ViewComponents:
                     self.entrys["Mês de Referência"].set(self.utils.MESES[data.month - 1])
                     self.entrys["Ano de Referência"].delete(0, "end")
                     self.entrys["Ano de Referência"].insert(0, str(data.year))
+                janela.attributes("-topmost", True)
                 janela_popup.destroy()  # Fecha o popup
 
             #Criar uma nova janela (popup)
+            janela.attributes("-topmost", False)
             janela_popup = ctk.CTkToplevel(janela)  
             janela_popup.title("Selecionar Data")
 

@@ -176,9 +176,11 @@ class ViewCliente:
 
                 '''
                 self.controller.modificar(alterar_dados,texto_feedback)
+                janela.attributes("-topmost", True)
                 janela_popup.destroy()
 
             #Criar uma nova janela (popup)
+            janela.attributes("-topmost", False)
             janela_popup = ctk.CTkToplevel(janela)  
             janela_popup.title("Alterar Dados")
 
@@ -285,9 +287,11 @@ class ViewCliente:
 
                 '''
                 self.controller.deletar(cliente)
+                janela.attributes("-topmost", True)
                 janela_popup.destroy()
 
             #Criar uma nova janela (popup)
+            janela.attributes("-topmost", False)
             janela_popup = ctk.CTkToplevel(janela)  
             janela_popup.title("Deletar Dados")
 
