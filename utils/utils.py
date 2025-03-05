@@ -15,8 +15,8 @@ sys.path.insert(0,PROJECT_ROOT)
 from datetime import datetime
 import customtkinter as ctk
 
-from model.nota import Nota
-from model.cliente import Cliente
+from model.model_nota import ModelNota
+from model.model_cliente import ModelCliente
 from config.logger import LoggerPro
 
 class UtilsPro:
@@ -52,7 +52,7 @@ class UtilsPro:
 
         self.logger = LoggerPro()
 
-    def formatar_cliente(self, cliente: Cliente) -> Cliente:
+    def formatar_cliente(self, cliente: ModelCliente) -> ModelCliente:
         cliente.nome = str(cliente.nome).strip()
         cliente.cc = str(cliente.cc).strip()
         cliente.tipo = str(cliente.tipo).strip()
@@ -60,7 +60,7 @@ class UtilsPro:
 
         return cliente
 
-    def formatar_nota(self, nota: Nota) -> Nota:
+    def formatar_nota(self, nota: ModelNota) -> ModelNota:
         """
         Formata os valores de um dicionário, convertendo datas e valores monetários.
 
@@ -135,7 +135,7 @@ class UtilsPro:
                 raise ValueError
 
     
-    def validar_data(self,nota: Nota) -> bool:
+    def validar_data(self,nota: ModelNota) -> bool:
         if nota.data_pag == '':
             return True
         try:
@@ -196,11 +196,9 @@ class UtilsPro:
         """
         contador = 0
         for componente in janela.winfo_children():
-            if isinstance(componente, (ctk.CTkLabel, ctk.CTkEntry)):
+            if contador > 2 and isinstance(componente, (ctk.CTkLabel, ctk.CTkEntry,ctk.CTkButton, ctk.CTkComboBox)):
                 componente.destroy()
-            elif contador > 3 and isinstance(componente, (ctk.CTkButton, ctk.CTkComboBox)):
-                componente.destroy()
-
+                
             contador += 1
 
     def pegar_mes_atual(self) -> int:

@@ -11,7 +11,7 @@ import sys
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0,PROJECT_ROOT)
 
-from model.nota import Nota
+from model.model_nota import ModelNota
 from utils.utils import UtilsPro
 from repository.repository_nota import RepositoryNota
 from config.logger import LoggerPro
@@ -23,11 +23,11 @@ class ServiceNota:
         self.repository = RepositoryNota()
         self.logger = LoggerPro()
     
-    def formatar(self,nota: Nota) -> Nota:
+    def formatar(self,nota: ModelNota) -> ModelNota:
         nota = self.utils.formatar_nota(nota)
         return nota
     
-    def validar(self,nota: Nota) -> bool:
+    def validar(self,nota: ModelNota) -> bool:
         if self.utils.validar_data(nota):
             if self.repository.verificar_centro_custo(nota.cc):
                 return True
@@ -39,7 +39,7 @@ class ServiceNota:
             return False
 
 
-    def inserir(self,nota:Nota) -> None:
+    def inserir(self,nota:ModelNota) -> None:
         
         nota = self.formatar(nota)
         
@@ -54,13 +54,13 @@ class ServiceNota:
             raise ValueError("Error ao Cadastrar a nota")
 
 
-    def retirar(self,pagina_atual: int) -> list[Nota]:
+    def retirar(self,pagina_atual: int) -> list[ModelNota]:
 
         return self.repository.retirar(pagina_atual)
                     
 
 
-    def modificar(self,nota: Nota) -> None:
+    def modificar(self,nota: ModelNota) -> None:
         
         nota = self.formatar(nota)
         
@@ -69,7 +69,7 @@ class ServiceNota:
         else:
             raise ValueError("Error ao alterar a nota")
 
-    def deletar(self,nota: Nota) -> None:
+    def deletar(self,nota: ModelNota) -> None:
 
         self.repository.deletar(nota)
       

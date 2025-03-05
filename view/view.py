@@ -63,12 +63,12 @@ class App(ctk.CTk):
         #criação dos botões principais
         self.components.criar_botao('Cliente',lambda: self.client.janela(self),0,0,self)
         self.components.criar_botao('Nota',lambda: self.nota.janela(self),0,1,self)
-        self.components.criar_botao('Relatório',self.janela_relatorio,0,3,self)
+        self.components.criar_botao('Relatório',lambda:self.janela_relatorio(self,0),0,3,self)
 
         #Mantém a aplicação rodando
         self.mainloop()
     
-    def janela_relatorio(self) -> None:
+    def janela_relatorio(self,janela_main: ctk.CTk, pagina: int) -> None:
         """
         Cria uma janela secundária para gerar relatórios.
         
@@ -77,18 +77,126 @@ class App(ctk.CTk):
 
         #Limpando o dicionario de campos e a janela
         self.components.entrys = dict()
-        self.utils.limpar(self.janela_secundaria)
+        janela_secundaria = ctk.CTkToplevel(janela_main)
+        janela_secundaria.title("Janela Relatório")
+
+         #Traz a janela para frente e Mantém frente das demais janelas
+        janela_secundaria.focus()  
+        janela_secundaria.attributes("-topmost", True)
+
+        #limpar os dados da pagina anterior
+        self.utils.limpar(janela_secundaria)
 
         #botões para ver e alterar dados
-        self.components.criar_botao('Gerar Relatório',"fazenddooo",3,0,self.janela_secundaria)
+        self.components.criar_botao('Gerar Relatório',"fazenddooo",0,0,janela_secundaria)
         
-        entry_mes = ctk.CTkComboBox(self.janela_secundaria,values=self.utils.MESES)
+        entry_mes = ctk.CTkComboBox(janela_secundaria,values=self.utils.MESES)
         entry_mes.set(self.utils.MESES[self.utils.pegar_mes_atual()])
-        entry_mes.grid(column=4, row=0,pady=10,padx=10)
+        entry_mes.grid(column=1, row=0,pady=10,padx=10)
 
-        entry_ano = ctk.CTkEntry(self.janela_secundaria)
+        entry_ano = ctk.CTkEntry(janela_secundaria)
         entry_ano.insert(0,str(self.utils.pegar_ano_atual()))
-        entry_mes.grid(column=5, row=0,pady=10,padx=10)
+        entry_ano.grid(column=2, row=0,pady=10,padx=10)
+
+        dados = self.controller.retirar(pagina)
+        
+        #Posição inicial
+        posicao = 0
+        linha = 1
+        
+        #Colocando as colunas
+        for coluna in self.utils.colunas_all:
+            col = ctk.CTkLabel(janela_secundaria,text=coluna,font=("Arial", 16, "bold"))
+            col.grid(column=posicao,row=linha, pady=10,padx=10)
+
+            posicao += 1
+        
+        #posição
+        linha = 2
+        coluna = 0
+        for dado in dados:
+            #Limpando o dicionario de campos
+            self.components.entrys = dict()
+            for chave,campo in dado.__dict__.items():
+
+                entry = ctk.CTkLabel(janela_secundaria,text=f'{campo}')
+                entry.grid(column=coluna,row=linha, pady=10,padx=10)
+
+                coluna += 1
+            #alterando a posição do próximo registro
+            coluna = 0
+            linha += 1
+        
+        #posição
+        coluna = 0
+        linha +=1 
+        
+        #colocando a quantidade de paginas(tendo em vista que serão 
+        # 10 registros por pagina)
+        #e setando a pagina atual
+        for n in range(self.controller.contar_pagina()):
+            #verificando se está na pagina para desabilitar
+            if n == pagina:
+                self.components.criar_botao(f"{n+1}",lambda pagina = n: self.retirar(janela_secundaria,pagina),coluna,linha,janela_secundaria,True)
+                coluna += 1
+                continue
+            
+            self.components.criar_botao(f"{n+1}",lambda pagina = n: self.retirar(janela_secundaria,pagina),coluna,linha,janela_secundaria)
+            coluna += 1
+    
+    def retirar(self, janela: ctk.CTk, pagina: int) -> None:
+        #Limpando o dicionario de campos e a janela
+        self.components.entrys = dict()
+
+        #limpar os dados da pagina anterior
+        self.utils.limpar(janela)
+
+        dados = self.controller.retirar(pagina)
+        
+        #Posição inicial
+        posicao = 0
+        linha = 1
+        
+        #Colocando as colunas
+        for coluna in self.utils.colunas_all:
+            col = ctk.CTkLabel(janela,text=coluna,font=("Arial", 16, "bold"))
+            col.grid(column=posicao,row=linha, pady=10,padx=10)
+
+            posicao += 1
+        
+        #posição
+        linha = 2
+        coluna = 0
+        for dado in dados:
+            #Limpando o dicionario de campos
+            self.components.entrys = dict()
+            for chave,campo in dado.__dict__.items():
+
+                entry = ctk.CTkLabel(janela,text=f'{campo}')
+                entry.grid(column=coluna,row=linha, pady=10,padx=10)
+
+                coluna += 1
+            #alterando a posição do próximo registro
+            coluna = 0
+            linha += 1
+        
+        #posição
+        coluna = 0
+        linha +=1 
+        
+        #colocando a quantidade de paginas(tendo em vista que serão 
+        # 10 registros por pagina)
+        #e setando a pagina atual
+        for n in range(self.controller.contar_pagina()):
+            #verificando se está na pagina para desabilitar
+            if n == pagina:
+                self.components.criar_botao(f"{n+1}",lambda pagina = n: self.retirar(janela,pagina),coluna,linha,janela,True)
+                coluna += 1
+                continue
+            
+            self.components.criar_botao(f"{n+1}",lambda pagina = n: self.retirar(janela,pagina),coluna,linha,janela)
+            coluna += 1
+
 
 if __name__ == '__main__':
     #inicio()

@@ -24,7 +24,7 @@ from utils.utils import UtilsPro
 #importação para a tipagem
 from customtkinter import CTkLabel
 
-from model.cliente import Cliente
+from model.model_cliente import ModelCliente
 
 class ControllerCliente:
     """
@@ -61,7 +61,7 @@ class ControllerCliente:
         descricao = dicionario['Descrição'].get()
         tipo = dicionario["Tipo de Cliente"].get()
 
-        cliente = Cliente('',nome,centro_custo,tipo,descricao)
+        cliente = ModelCliente('',nome,centro_custo,tipo,descricao)
         try:
             self.service.inserir(cliente)
             texto_feedback.configure(text='Cliente cadastrado com sucesso!!', text_color='green')
@@ -71,7 +71,7 @@ class ControllerCliente:
         except ValueError:
             texto_feedback.configure(text='Centro de custo está em banco', text_color='red')
 
-    def retirar(self, pagina: int) -> list[Cliente]:
+    def retirar(self, pagina: int) -> list[ModelCliente]:
         """
         Recupera a lista de clientes cadastrados.
 
@@ -114,7 +114,7 @@ class ControllerCliente:
             tipo = dado["Tipo"].get()
             
             
-            cliente = Cliente(id,nome,centro_custo,tipo,descricao)
+            cliente = ModelCliente(id,nome,centro_custo,tipo,descricao)
 
             try:
                 self.service.modificar(cliente)
@@ -126,7 +126,7 @@ class ControllerCliente:
         else:
             texto_feedback.configure(text='Clientes alterados com sucesso!!', text_color='green')
 
-    def deletar(self,cliente: Cliente) -> None:
+    def deletar(self,cliente: ModelCliente) -> None:
         self.service.deletar(cliente)
 
     def pesquisar(self, pesquisa: str, categoria: str):

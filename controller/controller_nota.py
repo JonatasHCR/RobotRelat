@@ -18,7 +18,7 @@ sys.path.insert(0,PROJECT_ROOT)
 from sqlite3 import IntegrityError
 
 #importações para funcionamento da classe
-from model.nota import Nota
+from model.model_nota import ModelNota
 from service.service_nota import ServiceNota
 from utils.utils import UtilsPro
 
@@ -62,7 +62,7 @@ class ControllerNota:
         mes_ref = dicionario["Mês de Referência"].get()
         ano_ref = dicionario['Ano de Referência'].get()
 
-        nota = Nota('',centro_custo,numero_nota,valor_nota,data_fat,data_pag,mes_ref,ano_ref)
+        nota = ModelNota('',centro_custo,numero_nota,valor_nota,data_fat,data_pag,mes_ref,ano_ref)
 
         try:   
             self.service.inserir(nota)
@@ -80,7 +80,7 @@ class ControllerNota:
         """
         return self.service.paginas()
 
-    def retirar(self, pagina: int) -> list[Nota]:
+    def retirar(self, pagina: int) -> list[ModelNota]:
         """
         Recupera a lista de notas fiscais cadastradas.
 
@@ -113,7 +113,7 @@ class ControllerNota:
             mes_ref = dado["Mês de Referência"].get()
             ano_ref = dado["Ano de Referência"].get()
 
-            nota = Nota(id_nota,centro_custo,numero_nota,valor_nota,data_fat,data_pag,mes_ref,ano_ref)
+            nota = ModelNota(id_nota,centro_custo,numero_nota,valor_nota,data_fat,data_pag,mes_ref,ano_ref)
             
             try:
                 self.service.modificar(nota)
@@ -125,7 +125,7 @@ class ControllerNota:
         else:
             texto_feedback.configure(text='notas alteradas com sucesso!!', text_color='green')
     
-    def deletar(self,nota: Nota) -> None:
+    def deletar(self,nota: ModelNota) -> None:
         self.service.deletar(nota)
 
     def pesquisar(self, pesquisa: str, categoria: str):

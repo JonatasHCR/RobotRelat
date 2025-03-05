@@ -7,7 +7,7 @@ sys.path.insert(0,PROJECT_ROOT)
 import sqlite3
 import dotenv
 
-from model.cliente import Cliente
+from model.model_cliente import ModelCliente
 
 dotenv.load_dotenv()
 
@@ -66,7 +66,7 @@ class RepositoryCliente:
         finally:
             self.desconectar()
 
-    def inserir(self,cliente: Cliente) -> None:
+    def inserir(self,cliente: ModelCliente) -> None:
         try:
             self.conectar()
 
@@ -111,7 +111,7 @@ class RepositoryCliente:
         finally:
             self.desconectar()
 
-    def retirar(self,pagina_atual: int) -> list[Cliente]:
+    def retirar(self,pagina_atual: int) -> list[ModelCliente]:
         try:
             self.conectar()
             
@@ -120,7 +120,7 @@ class RepositoryCliente:
             clientes = []
             
             for cliente in self.cursor.fetchall():
-                clientes.append(Cliente(*cliente))
+                clientes.append(ModelCliente(*cliente))
             
             return clientes
                     
@@ -128,7 +128,7 @@ class RepositoryCliente:
             self.desconectar()
 
 
-    def modificar(self,cliente: Cliente) -> None:
+    def modificar(self,cliente: ModelCliente) -> None:
         try:
             self.conectar()
             
@@ -143,7 +143,7 @@ class RepositoryCliente:
         finally:
             self.desconectar()
 
-    def deletar(self,cliente: Cliente):
+    def deletar(self,cliente: ModelCliente):
         try:
             self.conectar()
 

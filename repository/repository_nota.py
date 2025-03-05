@@ -9,7 +9,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-from model.nota import Nota
+from model.model_nota import ModelNota
 
 LIMIT_REGISTRO = 10 
 
@@ -67,7 +67,7 @@ class RepositoryNota:
             self.desconectar()
 
 
-    def inserir(self,nota: Nota) -> None:
+    def inserir(self,nota: ModelNota) -> None:
         try:
             self.conectar()
 
@@ -113,7 +113,7 @@ class RepositoryNota:
             self.desconectar()
 
 
-    def retirar(self,pagina_atual: int) -> list[Nota]:
+    def retirar(self,pagina_atual: int) -> list[ModelNota]:
         try:
             self.conectar()
             
@@ -121,14 +121,14 @@ class RepositoryNota:
             
             notas = []
             for nota in self.cursor.fetchall():
-                notas.append(Nota(*nota))
+                notas.append(ModelNota(*nota))
             
             return notas
                     
         finally:
             self.desconectar()
 
-    def modificar(self,nota: Nota) -> None:
+    def modificar(self,nota: ModelNota) -> None:
         
         try:
             self.conectar()
@@ -144,7 +144,7 @@ class RepositoryNota:
         finally:
             self.desconectar()
 
-    def deletar(self,nota: Nota) -> None:
+    def deletar(self,nota: ModelNota) -> None:
         try:
             self.conectar()
 

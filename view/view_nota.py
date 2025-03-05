@@ -22,7 +22,7 @@ import customtkinter as ctk
 from controller.controller_nota import ControllerNota
 from view.components import ViewComponents
 from utils.utils import UtilsPro
-from model.nota import Nota
+from model.model_nota import ModelNota
 
 
 class ViewNota:
@@ -57,18 +57,18 @@ class ViewNota:
         self.components.entrys = dict()
 
         #Configuração da janela
-        self.janela_secundaria = ctk.CTkToplevel(janela_main)
-        self.janela_secundaria.title("Janela Nota")
+        janela_secundaria = ctk.CTkToplevel(janela_main)
+        janela_secundaria.title("Janela Nota")
 
         #Traz a janela para frente e Mantém frente das demais janelas
-        self.janela_secundaria.focus()  
-        self.janela_secundaria.attributes("-topmost", True)
+        janela_secundaria.focus()  
+        janela_secundaria.attributes("-topmost", True)
 
-        self.components.criar_botao("Cadastrar",self.janela_form,0,0,self.janela_secundaria)
-        self.components.criar_botao("Alterar",lambda : self.janela_alterar(0),1,0,self.janela_secundaria)
-        self.components.criar_botao("Visualizar",lambda : self.janela_visualizar(0),2,0,self.janela_secundaria)
+        self.components.criar_botao("Cadastrar",lambda:self.janela_form(janela_secundaria),0,0,janela_secundaria)
+        self.components.criar_botao("Alterar",lambda : self.janela_alterar(janela_secundaria,0),1,0,janela_secundaria)
+        self.components.criar_botao("Visualizar",lambda : self.janela_visualizar(janela_secundaria,0),2,0,janela_secundaria)
 
-    def janela_form(self) -> None:
+    def janela_form(self, janela: ctk.CTkToplevel) -> None:
         """
         Cria uma janela secundária para adicionar a nota.
         
@@ -77,26 +77,26 @@ class ViewNota:
 
         #Limpando o dicionario de campos e a janela
         self.components.entrys = dict()
-        self.utils.limpar(self.janela_secundaria)
+        self.utils.limpar(janela)
         #posição
         coluna = 0
         linha = 1
         #Criando os campos de entradas(tem tipos diferentes, seleção , entrada de data, e normal)
-        self.components.criar_entry_opcao(self.janela_secundaria,coluna,linha,20,"Quantidade de Registros")
-        self.components.criar_entrys(['Centro de Custo', 'Numero da Nota', 'Valor da Nota'],coluna,linha+1,self.janela_secundaria)
-        self.components.criar_entry_data(self.janela_secundaria,coluna,linha+4,'Data de Faturamento')
-        self.components.criar_entry_data(self.janela_secundaria,coluna,linha+5,'Data de Pagamento')
-        self.components.criar_entry_opcao(self.janela_secundaria,coluna,linha+6,self.utils.MESES,"Mês de Referência")
-        self.components.criar_entry('Ano de Referência',0,linha+7,self.janela_secundaria,self.utils.pegar_ano_atual())
+        self.components.criar_entry_opcao(janela,coluna,linha,20,"Quantidade de Registros")
+        self.components.criar_entrys(['Centro de Custo', 'Numero da Nota', 'Valor da Nota'],coluna,linha+1,janela)
+        self.components.criar_entry_data(janela,coluna,linha+4,'Data de Faturamento')
+        self.components.criar_entry_data(janela,coluna,linha+5,'Data de Pagamento')
+        self.components.criar_entry_opcao(janela,coluna,linha+6,self.utils.MESES,"Mês de Referência")
+        self.components.criar_entry('Ano de Referência',0,linha+7,janela,self.utils.pegar_ano_atual())
 
         #botão de envio
-        self.components.criar_botao('Enviar',lambda: self.controller.cadastrar(texto_feedback,self.components.entrys),coluna+1,linha+8,self.janela_secundaria)
+        self.components.criar_botao('Enviar',lambda: self.controller.cadastrar(texto_feedback,self.components.entrys),coluna+1,linha+8,janela)
 
         #texto para retorna o sucesso ou a falha
-        texto_feedback = ctk.CTkLabel(self.janela_secundaria,text='')
+        texto_feedback = ctk.CTkLabel(janela,text='')
         texto_feedback.grid(column=coluna+1, row=linha+9,pady=10,padx=10)
 
-    def janela_alterar(self, pagina: int):
+    def janela_alterar(self,janela: ctk.CTkToplevel, pagina: int):
         """
         Cria uma tabela na janela.
         
@@ -111,7 +111,7 @@ class ViewNota:
         """
 
         #limpar os dados da pagina anterior
-        self.utils.limpar(self.janela_secundaria)
+        self.utils.limpar(janela)
 
         #recebendo a lista de dados das notas
         notas = self.controller.retirar(pagina)
@@ -124,7 +124,7 @@ class ViewNota:
         for coluna in self.utils.colunas_notas:
             if coluna == 'id':
                 continue
-            col = ctk.CTkLabel(self.janela_secundaria,text=coluna,font=("Arial", 16, "bold"))
+            col = ctk.CTkLabel(janela,text=coluna,font=("Arial", 16, "bold"))
             col.grid(column=posicao,row=linha, pady=10,padx=10)
 
             posicao += 1
@@ -140,7 +140,7 @@ class ViewNota:
             for chave,campo in nota.__dict__.items():
                 #coluna oculta
                 if chave == 'id':
-                    entry = ctk.CTkEntry(self.janela_secundaria)
+                    entry = ctk.CTkEntry(janela)
                     entry.grid(column=coluna,row=linha, pady=10,padx=10)
                     entry.grid_remove()
                     entry.insert(0,campo)
@@ -150,7 +150,7 @@ class ViewNota:
                     continue
                 #coluna onde tem opções
                 if chave == 'mes_ref':
-                    entry =  ctk.CTkComboBox(self.janela_secundaria, values=self.utils.MESES)
+                    entry =  ctk.CTkComboBox(janela, values=self.utils.MESES)
                     entry.grid(column=coluna-1,row=linha, pady=10,padx=10)
                     entry.set(campo)
                     self.components.entrys[self.utils.colunas_notas[coluna]] = entry
@@ -158,14 +158,14 @@ class ViewNota:
                     continue
                 
                 #campo alterável, com o valor atual no banco
-                entry = ctk.CTkEntry(self.janela_secundaria)
+                entry = ctk.CTkEntry(janela)
                 entry.grid(column=coluna-1,row=linha, pady=10,padx=10)
                 entry.insert(0,campo)
                 self.components.entrys[self.utils.colunas_notas[coluna]] = entry
 
                 coluna += 1
             #adicionado todos os registros
-            self.components.criar_botao("Deletar",lambda nota= nota:self.popup_deletar(nota),coluna-1,linha,self.janela_secundaria)
+            self.components.criar_botao("Deletar",lambda nota= nota:self.popup_deletar(janela,nota),coluna-1,linha,janela)
             alterar_dados.append(self.components.entrys)
             #alterando a posição do próximo registro
             coluna = 0
@@ -181,11 +181,11 @@ class ViewNota:
         for n in range(self.controller.contar_pagina()):
             #verificando se está na pagina para desabilitar
             if n == pagina:
-                self.components.criar_botao(f"{n+1}",lambda pagina = n: self.janela_alterar(pagina),coluna,linha,self.janela_secundaria,True)
+                self.components.criar_botao(f"{n+1}",lambda pagina = n: self.janela_alterar(janela,pagina),coluna,linha,janela,True)
                 coluna += 1
                 continue
             
-            self.components.criar_botao(f"{n+1}",lambda pagina = n: self.janela_alterar(pagina),coluna,linha,self.janela_secundaria)
+            self.components.criar_botao(f"{n+1}",lambda pagina = n: self.janela_alterar(janela,pagina),coluna,linha,janela)
             coluna += 1
         
         def popup_confirmacao() -> None:
@@ -204,7 +204,7 @@ class ViewNota:
                 janela_popup.destroy()
 
             #Criar uma nova janela (popup)
-            janela_popup = ctk.CTkToplevel(self.janela_secundaria)  
+            janela_popup = ctk.CTkToplevel(janela)  
             janela_popup.title("Alterar Dados")
 
             #Traz a janela para frente e Mantém frente das demais janelas
@@ -220,14 +220,14 @@ class ViewNota:
             botao.grid(column=1,row=1, pady=10,padx=10)      
         
         #botão para alterar os dados
-        self.components.criar_botao('Alterar Dados', popup_confirmacao,0,linha+1,self.janela_secundaria)
+        self.components.criar_botao('Alterar Dados', popup_confirmacao,0,linha+1,janela)
         
         
         #texto para retorna o sucesso ou a falha
-        texto_feedback = ctk.CTkLabel(self.janela_secundaria,text='')
+        texto_feedback = ctk.CTkLabel(janela,text='')
         texto_feedback.grid(column=0, row=linha+2,pady=10,padx=10)
     
-    def janela_visualizar(self, pagina: int) -> None:
+    def janela_visualizar(self,janela:ctk.CTkToplevel, pagina: int) -> None:
         """
         Cria uma tabela na janela.
         
@@ -242,7 +242,7 @@ class ViewNota:
         """
 
         #limpar os dados da pagina anterior
-        self.utils.limpar(self.janela_secundaria)
+        self.utils.limpar(janela)
 
         #recebendo a lista de dados das notas
         notas = self.controller.retirar(pagina)
@@ -255,7 +255,7 @@ class ViewNota:
         for coluna in self.utils.colunas_notas:
             if coluna == 'id':
                 continue
-            col = ctk.CTkLabel(self.janela_secundaria,text=coluna,font=("Arial", 16, "bold"))
+            col = ctk.CTkLabel(janela,text=coluna,font=("Arial", 16, "bold"))
             col.grid(column=posicao,row=linha, pady=10,padx=10)
 
             posicao += 1
@@ -271,7 +271,7 @@ class ViewNota:
                 if chave == 'id':
                     continue
                 #campo alterável, com o valor atual no banco
-                entry = ctk.CTkLabel(self.janela_secundaria,text=f'{campo}')
+                entry = ctk.CTkLabel(janela,text=f'{campo}')
                 entry.grid(column=coluna,row=linha, pady=10,padx=10)
 
                 coluna += 1
@@ -289,14 +289,14 @@ class ViewNota:
         for n in range(self.controller.contar_pagina()):
             #verificando se está na pagina para desabilitar
             if n == pagina:
-                self.components.criar_botao(f"{n+1}",lambda pagina = n: self.janela_visualizar(pagina),coluna,linha,self.janela_secundaria,True)
+                self.components.criar_botao(f"{n+1}",lambda pagina = n: self.janela_visualizar(janela,pagina),coluna,linha,janela,True)
                 coluna += 1
                 continue
             
-            self.components.criar_botao(f"{n+1}",lambda pagina = n: self.janela_visualizar(pagina),coluna,linha,self.janela_secundaria)
+            self.components.criar_botao(f"{n+1}",lambda pagina = n: self.janela_visualizar(janela,pagina),coluna,linha,janela)
             coluna += 1
 
-    def popup_deletar(self,nota: Nota) -> None:
+    def popup_deletar(self, janela: ctk.CTkToplevel, nota: ModelNota) -> None:
         def popup_confirmacao() -> None:
             """
             Abre um popup para confirma se o usuário quer mesmo deletar os dados da nota.
@@ -313,7 +313,7 @@ class ViewNota:
                 janela_popup.destroy()
 
             #Criar uma nova janela (popup)
-            janela_popup = ctk.CTkToplevel(self.janela_secundaria)  
+            janela_popup = ctk.CTkToplevel(janela)  
             janela_popup.title("Deletar Dados")
 
             #Traz a janela para frente e Mantém frente das demais janelas

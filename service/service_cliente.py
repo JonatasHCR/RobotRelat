@@ -11,7 +11,7 @@ import sys
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0,PROJECT_ROOT)
 
-from model.cliente import Cliente
+from model.model_cliente import ModelCliente
 from utils.utils import UtilsPro
 from config.logger import LoggerPro
 from repository.repository_cliente import RepositoryCliente
@@ -25,12 +25,12 @@ class ServiceCliente:
         self.repository = RepositoryCliente()
         self.logger = LoggerPro()
     
-    def formatar(self,cliente: Cliente) -> Cliente:
+    def formatar(self,cliente: ModelCliente) -> ModelCliente:
         cliente = self.utils.formatar_cliente(cliente)
         
         return cliente
     
-    def validar_cc(self, cliente: Cliente) -> bool:
+    def validar_cc(self, cliente: ModelCliente) -> bool:
 
         if cliente.cc == '':
             return False
@@ -39,7 +39,7 @@ class ServiceCliente:
     
 
 
-    def inserir(self,Cliente: Cliente) -> None:
+    def inserir(self,Cliente: ModelCliente) -> None:
         
         Cliente = self.formatar(Cliente)
         if self.validar_cc(Cliente):
@@ -53,13 +53,13 @@ class ServiceCliente:
             self.logger.mensagem_error("Centro de custo não pode estar em branco cliente não pode ser cadastrado")
             raise ValueError("Centro de custo não pode estar em branco cliente não pode ser cadastrado")
 
-    def retirar(self,pagina_atual: int) -> list[Cliente]:
+    def retirar(self,pagina_atual: int) -> list[ModelCliente]:
         
         return self.repository.retirar(pagina_atual)
                     
 
 
-    def modificar(self,Cliente: Cliente) -> None:
+    def modificar(self,Cliente: ModelCliente) -> None:
         
         Cliente = self.formatar(Cliente)
         if self.validar_cc(Cliente):
@@ -73,7 +73,7 @@ class ServiceCliente:
             self.logger.mensagem_error("Centro de custo não pode estar em branco cliente não pode ser alterado")
             raise ValueError("Centro de custo não pode estar em branco cliente não pode ser alterado")
 
-    def deletar(self,Cliente: Cliente) -> None:
+    def deletar(self,Cliente: ModelCliente) -> None:
 
         self.repository.deletar(Cliente)
         self.logger.mensagem_success("Cliente deletado com sucesso")

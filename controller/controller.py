@@ -18,6 +18,9 @@ sys.path.insert(0,PROJECT_ROOT)
 from controller.controller_cliente import ControllerCliente
 from controller.controller_nota import ControllerNota
 from utils.utils import UtilsPro
+from service.service import ServicePro
+from model.model_cliente import ModelCliente
+from model.model_nota import ModelNota
 
 #importação para a tipagem
 from customtkinter import CTkLabel
@@ -39,8 +42,9 @@ class ControllerPro:
         self.cliente = ControllerCliente()
         self.nota = ControllerNota()
         self.utils = UtilsPro()
+        self.service = ServicePro()
 
-    def contar_pagina(self, cliente: bool = False, notas: bool = False, all: bool = False) -> int:
+    def contar_pagina(self) -> int:
         """
         Conta o número de páginas disponíveis para clientes, notas ou todos os registros.
 
@@ -51,9 +55,9 @@ class ControllerPro:
         return: 
             (int): Número total de páginas.
         """
-        return self.db.contar_pagina(cliente=cliente, notas=notas, all=all)
+        return self.service.paginas()
 
-    def retirar_all(self, pagina: int) -> list[list]:
+    def retirar(self, pagina: int) -> list[tuple[ModelCliente,ModelNota]]:
         """
         Recupera todos os registros disponíveis.
 
@@ -63,7 +67,7 @@ class ControllerPro:
         return: 
             (list[list]): Lista contendo a Lista de dados mescados dos clientes e notas.
         """
-        return self.db.retirar_all(pagina)
+        return self.service.retirar(pagina)
 
     def pesquisar(self, pesquisa: str, categoria: str):
         pass
