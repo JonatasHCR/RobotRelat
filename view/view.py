@@ -86,17 +86,17 @@ class App(ctk.CTk):
 
         #limpar os dados da pagina anterior
         self.utils.limpar(janela_secundaria)
-
-        #botões para ver e alterar dados
-        self.components.criar_botao('Gerar Relatório',"fazenddooo",0,0,janela_secundaria)
         
         entry_mes = ctk.CTkComboBox(janela_secundaria,values=self.utils.MESES)
         entry_mes.set(self.utils.MESES[self.utils.pegar_mes_atual()])
-        entry_mes.grid(column=1, row=0,pady=10,padx=10)
+        entry_mes.grid(column=0, row=0,pady=10,padx=10)
 
         entry_ano = ctk.CTkEntry(janela_secundaria)
         entry_ano.insert(0,str(self.utils.pegar_ano_atual()))
-        entry_ano.grid(column=2, row=0,pady=10,padx=10)
+        entry_ano.grid(column=1, row=0,pady=10,padx=10)
+
+        #botões para ver e alterar dados
+        self.components.criar_botao('Gerar Relatório',"fazenddooo",2,0,janela_secundaria)
 
         dados = self.controller.retirar(pagina)
         

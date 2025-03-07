@@ -23,7 +23,7 @@ from model.model_cliente import ModelCliente
 from model.model_nota import ModelNota
 
 #importação para a tipagem
-from customtkinter import CTkLabel
+from customtkinter import CTkLabel,CTkComboBox,CTkEntry
 
 class ControllerPro:
     """
@@ -71,6 +71,9 @@ class ControllerPro:
 
     def pesquisar(self, pesquisa: str, categoria: str):
         pass
+
+    def relatorio(self, entry_mes: CTkComboBox, entry_ano: CTkEntry) -> None:
+        self.service.relatorio(entry_mes,entry_ano)
 
 if __name__ == '__main__':
     pass

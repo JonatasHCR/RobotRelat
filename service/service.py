@@ -10,6 +10,7 @@ from repository.repository import RepositoryPro
 from model.model_cliente import ModelCliente
 from model.model_nota import ModelNota
 from model.model import ModelPro
+from customtkinter import CTkComboBox,CTkEntry
 
 class ServicePro:
     def __init__(self):
@@ -23,3 +24,6 @@ class ServicePro:
     def paginas(self) -> int:
         
         return self.repository.contar_pagina()
+    
+    def relatorio(self, entry_mes: CTkComboBox, entry_ano: CTkEntry) -> None:
+        pass
