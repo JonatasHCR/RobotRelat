@@ -6,7 +6,7 @@ sys.path.insert(0,PROJECT_ROOT)
 
 #criando a pasta e o arquivo de log
 ENV_FILE = os.path.join('.env')
-DB_FILE = os.path.join('model',"db.sqlite3")
+DB_FILE = os.path.join("db.sqlite3")
 LOG_FILE = os.path.join('log','log.txt')
 
 
