@@ -96,7 +96,7 @@ class App(ctk.CTk):
         entry_ano.grid(column=1, row=0,pady=10,padx=10)
 
         #botões para ver e alterar dados
-        self.components.criar_botao('Gerar Relatório',"fazenddooo",2,0,janela_secundaria)
+        self.components.criar_botao('Gerar Relatório',lambda: self.controller.relatorio(entry_mes,entry_ano),2,0,janela_secundaria)
 
         dados = self.controller.retirar(pagina)
         
@@ -118,6 +118,8 @@ class App(ctk.CTk):
             #Limpando o dicionario de campos
             self.components.entrys = dict()
             for chave,campo in dado.__dict__.items():
+                if  chave in ["tipo", "mes_ref", "ano_ref"]:
+                    continue
 
                 entry = ctk.CTkLabel(janela_secundaria,text=f'{campo}')
                 entry.grid(column=coluna,row=linha, pady=10,padx=10)
@@ -171,6 +173,8 @@ class App(ctk.CTk):
             #Limpando o dicionario de campos
             self.components.entrys = dict()
             for chave,campo in dado.__dict__.items():
+                if  chave in ["tipo", "mes_ref", "ano_ref"]:
+                    continue
 
                 entry = ctk.CTkLabel(janela,text=f'{campo}')
                 entry.grid(column=coluna,row=linha, pady=10,padx=10)

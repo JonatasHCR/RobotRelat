@@ -73,7 +73,7 @@ class ControllerPro:
         pass
 
     def relatorio(self, entry_mes: CTkComboBox, entry_ano: CTkEntry) -> None:
-        self.service.relatorio(entry_mes,entry_ano)
+        self.service.relatorio_mensal(entry_mes,entry_ano)
 
 if __name__ == '__main__':
-    pass
+   pass

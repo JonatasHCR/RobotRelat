@@ -15,7 +15,7 @@ class ModelNota:
     e coloca seus respectivos valores
     """
 
-    def __init__(self,id: int, centro_de_custo: str, numero_nota: str, valor_nota: float, data_fat: str, data_pag: str, mes_ref: str, ano_ref: str) -> None:
+    def __init__(self,id: int, centro_de_custo: str, numero_nota: str, valor_nota: float, data_fat: str, data_pag: str, mes_ref: int, ano_ref: int) -> None:
         '''
         Inicializa criando os atributos relacionado as colunas, 
         e colocando já os valores
@@ -27,8 +27,8 @@ class ModelNota:
             valor_nota (float): Valor da nota fiscal 
             data_fat (str): Data de faturamento da nota 
             data_pag (str): Data de pagamento da nota 
-            mes_ref (str): Mês de referencia, mês que ela foi emitida 
-            ano_ref (str): Ano de referencia, ano que ela foi emitida
+            mes_ref (int): Mês de referencia, mês que ela foi emitida 
+            ano_ref (int): Ano de referencia, ano que ela foi emitida
 
         '''
         

@@ -56,8 +56,8 @@ class RepositoryNota:
                 'valor_nota INTEGER,'
                 'data_fat TEXT,'
                 'data_pag TEXT,'
-                'mes_ref TEXT,'
-                'ano_ref TEXT,'
+                'mes_ref INTEGER,'
+                'ano_ref INTEGER,'
                 'FOREIGN KEY (cc) REFERENCES clientes (cc) ON DELETE CASCADE'
                 ')'
             )

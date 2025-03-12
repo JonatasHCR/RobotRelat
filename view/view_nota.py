@@ -140,6 +140,7 @@ class ViewNota:
             for chave,campo in nota.__dict__.items():
                 #coluna oculta
                 if chave == 'id':
+                    campo = str(campo)
                     entry = ctk.CTkEntry(janela)
                     entry.grid(column=coluna,row=linha, pady=10,padx=10)
                     entry.grid_remove()
@@ -152,12 +153,13 @@ class ViewNota:
                 if chave == 'mes_ref':
                     entry =  ctk.CTkComboBox(janela, values=self.utils.MESES)
                     entry.grid(column=coluna-1,row=linha, pady=10,padx=10)
-                    entry.set(campo)
+                    entry.set(self.utils.MESES[campo])
                     self.components.entrys[self.utils.colunas_notas[coluna]] = entry
                     coluna += 1
                     continue
                 
                 #campo alterável, com o valor atual no banco
+                campo = str(campo)
                 entry = ctk.CTkEntry(janela)
                 entry.grid(column=coluna-1,row=linha, pady=10,padx=10)
                 entry.insert(0,campo)
@@ -257,6 +259,7 @@ class ViewNota:
         for coluna in self.utils.colunas_notas:
             if coluna == 'id':
                 continue
+            
             col = ctk.CTkLabel(janela,text=coluna,font=("Arial", 16, "bold"))
             col.grid(column=posicao,row=linha, pady=10,padx=10)
 
@@ -271,6 +274,12 @@ class ViewNota:
             for chave,campo in nota.__dict__.items():
                 #coluna oculta
                 if chave == 'id':
+                    continue
+                #coluna onde tem opções
+                if chave == 'mes_ref':
+                    entry =  ctk.CTkLabel(janela,text=f'{self.utils.MESES[campo]}')
+                    entry.grid(column=coluna,row=linha, pady=10,padx=10)
+                    coluna += 1
                     continue
                 #campo alterável, com o valor atual no banco
                 entry = ctk.CTkLabel(janela,text=f'{campo}')

@@ -18,6 +18,10 @@ import customtkinter as ctk
 from model.model_nota import ModelNota
 from model.model_cliente import ModelCliente
 from config.logger import LoggerPro
+from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.styles import Font, NamedStyle, Border, Side,Alignment
+from openpyxl.worksheet.table import Table, TableStyleInfo
+from openpyxl.utils import get_column_letter
 
 class UtilsPro:
     """
@@ -44,8 +48,13 @@ class UtilsPro:
         ]
 
         self.colunas_all = [
-            'Nome', "Tipo", "Valor da Nota", "Centro de Custo", 
+            'Nome', "Valor da Nota", "Centro de Custo", 
             "Data de Faturamento", "Data de Pagamento", "Descrição"
+        ]
+
+        self.colunas_all_planilha = [
+            'CLIENTE', "VALOR DA NOTA", "CENTRO DE CUSTO", 
+            "FAT", "PAG", "DESCRIÇÃO"
         ]
 
         self.tipo_cliente = ["Consórcio", "Próprio"]
@@ -75,8 +84,8 @@ class UtilsPro:
         nota.valor_nota = self.formatar_dinheiro(str(nota.valor_nota))
         nota.data_fat = self.formatar_data(str(nota.data_fat))
         nota.data_pag = self.formatar_data(str(nota.data_pag))
-        nota.mes_ref = str(nota.mes_ref).strip()
-        nota.ano_ref = str(nota.ano_ref).strip()
+        nota.mes_ref = self.MESES.index(str(nota.mes_ref).strip())
+        nota.ano_ref = int(str(nota.ano_ref).strip())
 
         return nota
 
@@ -139,11 +148,11 @@ class UtilsPro:
         if nota.data_pag == '':
             return True
         try:
-            if datetime.strptime(nota.data_fat,"%Y-%m-%d") < datetime.strptime(nota.data_pag,"%Y-%m-%d"):
+            if datetime.strptime(nota.data_fat,"%Y-%m-%d") > datetime.strptime(nota.data_pag,"%Y-%m-%d"):
                 return False
         except ValueError:
             try:
-                if datetime.strptime(nota.data_fat,"%d/%m/%Y") < datetime.strptime(nota.data_pag,"%d/%m/%Y"):
+                if datetime.strptime(nota.data_fat,"%d/%m/%Y") > datetime.strptime(nota.data_pag,"%d/%m/%Y"):
                     return False
             except ValueError:
                 self.logger.mensagem_error("Formato da Data invalido, use somente DD/MM/AA ou AA-MM-DD")
@@ -218,6 +227,46 @@ class UtilsPro:
             (int): Ano atual como inteiro.
         """
         return datetime.now().year
+    
+    def style_font_planilha(self,planilha: Worksheet, inicio_linha: int, fim_linha: int, inicio_coluna: int, fim_coluna: int):
+        for row in planilha.iter_rows(min_row=inicio_linha, max_row=fim_linha, min_col=inicio_coluna, max_col=fim_coluna):
+            for cell in row:
+                cell.alignment = Alignment(horizontal="center")
+                cell.font = Font(bold=True)
+    
+    def style_alinhar_planilha(self,planilha: Worksheet, inicio_linha: int, fim_linha: int, inicio_coluna: int, fim_coluna: int):
+        for row in planilha.iter_rows(min_row=inicio_linha, max_row=fim_linha, min_col=inicio_coluna, max_col=fim_coluna):
+            for cell in row:
+                cell.alignment = Alignment(horizontal="center")
+
+    def style_real_planilha(self,planilha: Worksheet, inicio_linha: int, fim_linha: int, inicio_coluna: int, fim_coluna: int, style_real: NamedStyle):
+        for row in planilha.iter_rows(min_row=inicio_linha, max_row=fim_linha, min_col=inicio_coluna, max_col=fim_coluna):
+            for cell in row:
+                cell.style =style_real
+    
+    def ajustar_colunas_planilha(self,planilha: Worksheet):
+        for col in planilha.iter_cols():
+            max_length = 0
+            col_letter = get_column_letter(col[0].column)
+            for cell in col:
+                if cell.value:
+                    max_length = max(max_length, len(str(cell.value)))
+            planilha.column_dimensions[col_letter].width = max_length + 2
+    
+    def style_borda_planilha(self,planilha: Worksheet, inicio_linha: int, fim_linha: int, inicio_coluna: int, fim_coluna: int) -> None:
+
+        # Definir um estilo de borda em negrito
+        borda_negrito = Border(
+            left=Side(style="medium"),   # Borda esquerda grossa
+            right=Side(style="medium"),  # Borda direita grossa
+            top=Side(style="medium"),    # Borda superior grossa
+            bottom=Side(style="medium")  # Borda inferior grossa
+        )
+        
+        for row in planilha.iter_rows(min_row=inicio_linha, max_row=fim_linha, min_col=inicio_coluna, max_col=fim_coluna):
+            for cell in row:
+                cell.border = borda_negrito
+    
 if __name__ == '__main__':
     #inicio()
     print(UtilsPro().MESES)

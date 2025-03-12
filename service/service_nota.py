@@ -65,7 +65,7 @@ class ServiceNota:
         nota = self.formatar(nota)
         
         if self.validar(nota):
-            self.repository.inserir(nota)
+            self.repository.modificar(nota)
         else:
             raise ValueError("Error ao alterar a nota")
 
