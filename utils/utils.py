@@ -267,6 +267,3 @@ class UtilsPro:
             for cell in row:
                 cell.border = borda_negrito
     
-if __name__ == '__main__':
-    #inicio()
-    print(UtilsPro().MESES)

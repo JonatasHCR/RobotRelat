@@ -342,15 +342,3 @@ class ViewNota:
             botao = ctk.CTkButton(janela_popup,text="DELETAR", command=aux_func,fg_color="red")
             botao.grid(column=1,row=1, pady=10,padx=10)
         popup_confirmacao()
-
-    
-
-    
-
-
-
-if __name__ == '__main__':
-    #inicio()
-    #controler = ControllerPro()
-    #app = App(controler)
-    pass

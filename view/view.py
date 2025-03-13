@@ -201,8 +201,3 @@ class App(ctk.CTk):
             self.components.criar_botao(f"{n+1}",lambda pagina = n: self.retirar(janela,pagina),coluna,linha,janela)
             coluna += 1
 
-
-if __name__ == '__main__':
-    #inicio()
-    controler = ControllerPro()
-    app = App(controler)

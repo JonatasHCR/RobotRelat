@@ -114,7 +114,3 @@ class RepositoryPro:
         
         finally:
             self.desconectar()
-
-if __name__ == "__main__":
-    teste = RepositoryPro()
-    teste.retirar(0)

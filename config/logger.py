@@ -42,5 +42,3 @@ class LoggerPro:
         with open(os.getenv("LOG_FILE"),"a",encoding='utf-8') as log:
             log.write(texto_success.format(self.hora_atual,msg))
 
-if __name__ == "__main__":
-    log = LoggerPro()

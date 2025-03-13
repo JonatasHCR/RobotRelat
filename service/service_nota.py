@@ -81,6 +81,3 @@ class ServiceNota:
     def pesquisar(self):
         pass
 
-
-if __name__ == '__main__':
-    pass

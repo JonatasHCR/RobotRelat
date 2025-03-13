@@ -309,8 +309,3 @@ class ViewCliente:
         popup_confirmacao()
 
     
-if __name__ == '__main__':
-    #inicio()
-    #controler = ControllerPro()
-    #app = App(controler)
-    pass

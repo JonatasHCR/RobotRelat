@@ -130,6 +130,3 @@ class ControllerNota:
 
     def pesquisar(self, pesquisa: str, categoria: str):
         pass
-
-if __name__ == '__main__':
-    pass
