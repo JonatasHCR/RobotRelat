@@ -12,7 +12,7 @@ from model.model import ModelPro
 
 import sqlite3
 
-LIMIT_REGISTRO = 10 
+LIMIT_REGISTRO = 10 #os.getenv("LIMIT_REGISTRO")
 
 class RepositoryPro:
     def __init__(self):

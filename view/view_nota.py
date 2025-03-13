@@ -153,7 +153,7 @@ class ViewNota:
                 if chave == 'mes_ref':
                     entry =  ctk.CTkComboBox(janela, values=self.utils.MESES)
                     entry.grid(column=coluna-1,row=linha, pady=10,padx=10)
-                    entry.set(self.utils.MESES[campo])
+                    entry.set(campo)
                     self.components.entrys[self.utils.colunas_notas[coluna]] = entry
                     coluna += 1
                     continue
@@ -277,7 +277,7 @@ class ViewNota:
                     continue
                 #coluna onde tem opções
                 if chave == 'mes_ref':
-                    entry =  ctk.CTkLabel(janela,text=f'{self.utils.MESES[campo]}')
+                    entry =  ctk.CTkLabel(janela,text=f'{campo}')
                     entry.grid(column=coluna,row=linha, pady=10,padx=10)
                     coluna += 1
                     continue

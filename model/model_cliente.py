@@ -23,7 +23,7 @@ class ModelCliente:
         param: 
             id (int): Identificação do cliente
             nome (str): Nome do cliente 
-            centro_de_custo (str): Centro de custo relacionado ao cliente 
+            centro_de_custo (str): Centro de custo do cliente 
             tipo (str): Tipo do cliente(Próprio ou Consorcio) 
             descricao (str): Um resumo do cliente 
 
@@ -35,4 +35,7 @@ class ModelCliente:
         self.descricao = descricao
     
     def __str__(self):
+        '''
+        Retornara todos os valores separados por "|"
+        '''
         return f"{self.nome}|{self.cc}|{self.tipo}|{self.descricao}"

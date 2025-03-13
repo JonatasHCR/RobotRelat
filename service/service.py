@@ -22,7 +22,7 @@ class ServicePro:
         self.relatorio = RelatorioPro()
     
     def retirar(self, pagina: int) -> list[ModelPro]:
-        return self.repository.retirar(pagina)
+        return self.utils.customizar_modelo(self.repository.retirar(pagina))
     
     def paginas(self) -> int:
         

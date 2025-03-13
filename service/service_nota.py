@@ -56,14 +56,12 @@ class ServiceNota:
 
     def retirar(self,pagina_atual: int) -> list[ModelNota]:
 
-        return self.repository.retirar(pagina_atual)
+        return self.utils.customizar_nota(self.repository.retirar(pagina_atual))
                     
 
 
     def modificar(self,nota: ModelNota) -> None:
-        
         nota = self.formatar(nota)
-        
         if self.validar(nota):
             self.repository.modificar(nota)
         else:

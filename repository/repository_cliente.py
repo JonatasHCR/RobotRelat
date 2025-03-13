@@ -1,3 +1,13 @@
+'''
+repository_cliente.py
+
+modulo que estará contendo a classe que cria o banco de dados, 
+e faz manipulação da tabela clientes, cadastrar, alterar, deletar,
+retirar.
+
+'''
+
+#importações para que consiga importar desde a raiz do projeto
 import os
 import sys
 
@@ -11,7 +21,7 @@ from model.model_cliente import ModelCliente
 
 dotenv.load_dotenv()
 
-LIMIT_REGISTRO = 10 
+LIMIT_REGISTRO = 10 #os.getenv("LIMIT_REGISTRO")
 
 class RepositoryCliente:
     def __init__(self) -> None:

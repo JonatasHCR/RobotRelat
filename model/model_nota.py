@@ -22,7 +22,7 @@ class ModelNota:
 
         param: 
             id (int): Identificação da conjunto de dados 
-            centro_de_custo (str): Centro de custo relacionado a nota 
+            centro_de_custo (str): Centro de custo relacionado ao cliente 
             numero_nota (str): Numero da nota fiscal 
             valor_nota (float): Valor da nota fiscal 
             data_fat (str): Data de faturamento da nota 
@@ -42,6 +42,8 @@ class ModelNota:
         self.ano_ref = ano_ref
 
     def __str__(self):
-
+        '''
+        Retornara todos os valores separados por "|"
+        '''
         return f"{self.cc}|{self.numero_nota}|R$ {str(self.valor_nota).replace('.',',')}|{self.data_fat}|{self.data_pag}|{self.mes_ref}|{self.ano_ref}"
     

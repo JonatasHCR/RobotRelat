@@ -17,10 +17,10 @@ import customtkinter as ctk
 
 from model.model_nota import ModelNota
 from model.model_cliente import ModelCliente
+from model.model import ModelPro
 from config.logger import LoggerPro
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.styles import Font, NamedStyle, Border, Side,Alignment
-from openpyxl.worksheet.table import Table, TableStyleInfo
 from openpyxl.utils import get_column_letter
 
 class UtilsPro:
@@ -84,10 +84,57 @@ class UtilsPro:
         nota.valor_nota = self.formatar_dinheiro(str(nota.valor_nota))
         nota.data_fat = self.formatar_data(str(nota.data_fat))
         nota.data_pag = self.formatar_data(str(nota.data_pag))
-        nota.mes_ref = self.MESES.index(str(nota.mes_ref).strip())
-        nota.ano_ref = int(str(nota.ano_ref).strip())
+        if nota.data_fat != '':
+            data = datetime.strptime(nota.data_fat,"%Y-%m-%d")
+            nota.mes_ref = data.month - 1
+            nota.ano_ref = data.year
+        else:    
+            nota.mes_ref = self.MESES.index(str(nota.mes_ref).strip())
+            nota.ano_ref = int(str(nota.ano_ref).strip())
 
         return nota
+    
+    def customizar_nota(self, notas: list[ModelNota]) -> list[ModelNota]:
+        """
+        Formata os valores de um dicionário, convertendo datas e valores monetários.
+
+        param:
+            nota(Nota): Dicionário contendo os dados a serem formatados.
+        
+        return
+            (Nota): Dicionário com os dados formatados.
+        """
+        lista = []
+        for nota in notas:
+            nota.valor_nota = self.customizar_dinheiro(str(nota.valor_nota))
+            nota.data_fat = self.customizar_data(str(nota.data_fat))
+            nota.data_pag = self.customizar_data(str(nota.data_pag))
+            nota.mes_ref = self.MESES[int(nota.mes_ref)]
+            nota.ano_ref = str(nota.ano_ref)
+            lista.append(nota)
+
+        return lista
+    
+    def customizar_modelo(self, modelo: list[ModelPro]) -> list[ModelPro]:
+        """
+        Formata os valores de um dicionário, convertendo datas e valores monetários.
+
+        param:
+            nota(Nota): Dicionário contendo os dados a serem formatados.
+        
+        return
+            (Nota): Dicionário com os dados formatados.
+        """
+        lista = []
+        for molde in modelo:
+            molde.valor = self.customizar_dinheiro(str(molde.valor))
+            molde.data_fat = self.customizar_data(str(molde.data_fat))
+            molde.data_pag = self.customizar_data(str(molde.data_pag))
+            molde.mes_ref = self.MESES[int(molde.mes_ref)]
+            molde.ano_ref = str(molde.ano_ref)
+            lista.append(molde)
+
+        return lista
 
     def formatar_dinheiro(self, dinheiro: str) -> float:
         """
@@ -113,6 +160,41 @@ class UtilsPro:
         except ValueError:
             self.logger.mensagem_error("Erro ao converter valor da nota verifique se existe uma letra presente")
             raise ValueError("Erro ao converter valor da nota verifique se existe uma letra presente")
+    
+    def customizar_dinheiro(self, dinheiro: str) -> float:
+        """
+        Converte uma string representando dinheiro em um valor float.
+
+        param:
+            dinheiro(str): String representando um valor monetário (ex: "R$1.234,56").
+        
+        return: 
+            (float): Valor convertido para float.
+        
+        raises 
+            ValueError: Se a conversão falhar.
+        """
+        valor = dinheiro.strip()
+        valor = valor.replace('.',',')
+        valor = valor.split(',')
+        valor[0] = valor[0][::-1]
+        valor_customizado = ''
+        contador = 0
+
+        for number in valor[0]:
+            if contador // 3 == 1:
+                valor_customizado +=  '.' + number
+                contador = 1
+                continue
+            
+            valor_customizado += number
+            contador += 1
+        
+        valor_customizado = valor_customizado[::-1] 
+        if len(valor) != 1:
+            valor_customizado += ","+ valor[1]
+
+        return valor_customizado
 
     def formatar_data(self, data: str) -> str:
         """
@@ -142,6 +224,28 @@ class UtilsPro:
             except ValueError:
                 self.logger.mensagem_error("Formato da Data invalido, use somente DD/MM/AA ou AA-MM-DD")
                 raise ValueError
+    
+    def customizar_data(self, data: str) -> str:
+        """
+        Converte uma data no formato brasileiro para o formato internacional (YYYY-MM-DD) e vice-versa.
+
+        param:
+            data(str): String representando uma data (ex: "10/05/2023" ou "2023-05-10").
+        
+        return: 
+            (str): Data formatada como string.
+        """
+        if data == '':
+            return data
+        try:
+            data_for = datetime.strptime(data,"%Y-%m-%d")
+            data_for = data_for.strftime("%d/%m/%Y")
+        except ValueError:
+            data_for = datetime.strptime(data,"%d/%m/%Y")
+            data_for = data_for.strftime("%d/%m/%Y")
+        
+        return data_for
+        
 
     
     def validar_data(self,nota: ModelNota) -> bool:
@@ -257,13 +361,12 @@ class UtilsPro:
 
         # Definir um estilo de borda em negrito
         borda_negrito = Border(
-            left=Side(style="medium"),   # Borda esquerda grossa
-            right=Side(style="medium"),  # Borda direita grossa
-            top=Side(style="medium"),    # Borda superior grossa
-            bottom=Side(style="medium")  # Borda inferior grossa
+            left=Side(style="thin"),   # Borda esquerda grossa
+            right=Side(style="thin"),  # Borda direita grossa
+            top=Side(style="thin"),    # Borda superior grossa
+            bottom=Side(style="thin")  # Borda inferior grossa
         )
         
         for row in planilha.iter_rows(min_row=inicio_linha, max_row=fim_linha, min_col=inicio_coluna, max_col=fim_coluna):
             for cell in row:
                 cell.border = borda_negrito
-    

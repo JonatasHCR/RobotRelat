@@ -1,3 +1,13 @@
+'''
+repository_nota.py
+
+modulo que estará contendo a classe que cria o banco de dados, 
+e faz manipulação da tabela notas, cadastrar, alterar, deletar,
+retirar.
+
+'''
+
+#importações para que consiga importar desde a raiz do projeto
 import os
 import sys
 
@@ -11,7 +21,7 @@ dotenv.load_dotenv()
 
 from model.model_nota import ModelNota
 
-LIMIT_REGISTRO = 10 
+LIMIT_REGISTRO = 10 #os.getenv("LIMIT_REGISTRO")
 
 class RepositoryNota:
     def __init__(self) -> None:

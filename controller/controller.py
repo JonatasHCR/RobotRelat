@@ -2,12 +2,11 @@
 controller.py
 
 modulo que estará contendo a classe que faz a ponte entre a parte
-gráfica, e o banco de dados.
+gráfica, e a resposta do service relacionado ao modelo de relatório.
 
 '''
 
-#importações para que consiga importar 
-#desde a raiz do projeto
+#importações para que consiga importar desde a raiz do projeto
 import sys
 import os
 
@@ -15,57 +14,51 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0,PROJECT_ROOT)
 
 #importações para funcionamento da classe
-from controller.controller_cliente import ControllerCliente
-from controller.controller_nota import ControllerNota
 from utils.utils import UtilsPro
 from service.service import ServicePro
-from model.model_cliente import ModelCliente
-from model.model_nota import ModelNota
+from model.model import ModelPro
 
 #importação para a tipagem
-from customtkinter import CTkLabel,CTkComboBox,CTkEntry
+from customtkinter import CTkComboBox,CTkEntry
 
 class ControllerPro:
     """
     Classe responsável pelo controle das operações do sistema financeiro.
 
-    Atua como intermediária entre a interface gráfica e o banco de dados,
-    realizando operações como cadastro, modificação e recuperação de clientes e notas fiscais.
+    Atua como intermediária entre a interface gráfica e o service que
+    realiza operações recuperação de dados e gera relatório dos 
+    clientes e notas fiscais, que compõem o modelo do relatório.
     """
 
     def __init__(self):
         """
         Inicializa a classe ControllerPro.
         
-        Cria instâncias das classes DatabasePro e UtilsPro.
+        Cria instâncias das classes ServicePro e UtilsPro.
         """
-        self.cliente = ControllerCliente()
-        self.nota = ControllerNota()
         self.utils = UtilsPro()
         self.service = ServicePro()
 
     def contar_pagina(self) -> int:
         """
-        Conta o número de páginas disponíveis para clientes, notas ou todos os registros.
+        Aciona o service para contar o número de páginas disponíveis para o modelo de
+        relatório
 
-        param:
-            cliente(bool): Se True, conta páginas de clientes.
-            notas(bool): Se True, conta páginas de notas fiscais.
-            all(bool): Se True, conta todas as páginas de registros.
         return: 
             (int): Número total de páginas.
         """
         return self.service.paginas()
 
-    def retirar(self, pagina: int) -> list[tuple[ModelCliente,ModelNota]]:
+    def retirar(self, pagina: int) -> list[ModelPro]:
         """
-        Recupera todos os registros disponíveis.
+        Aciona o service para recuperar todos os registros disponíveis.
 
         param: 
             pagina(int): Número da página de registros a ser recuperada.
         
         return: 
-            (list[list]): Lista contendo a Lista de dados mescados dos clientes e notas.
+            (list[ModelPro]): Lista contendo os dados 
+            em instâncias do modelo relatório
         """
         return self.service.retirar(pagina)
 
@@ -73,4 +66,12 @@ class ControllerPro:
         pass
 
     def relatorio(self, entry_mes: CTkComboBox, entry_ano: CTkEntry) -> None:
+        """
+        Aciona o service para gerar o relatório.
+
+        param: 
+            entry_mes (CTkComboBox): entry onde esta o mês escolhido
+            entry_ano (CTkEntry): entry onde esta o ano escolhido
+        
+        """
         self.service.relatorio_mensal(entry_mes,entry_ano)
