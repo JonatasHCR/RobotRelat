@@ -69,6 +69,13 @@ class RelatorioPro:
         mes_anterior = self.utils.MESES[dados_mes[0].mes_ref - 1]
         comparar_ano_anterior = dados_mes[0].mes_ref == 0
 
+        lista_proprio = []
+        lista_consorsio = []
+
+        for dado in dados_mes:
+            if dado.tipo == "":#continuar
+                pass
+
         #criando o relatório do mes escolhido
         linha_atual = self.planilha.min_row
         self.planilha.merge_cells(f'A{linha_atual}:F{linha_atual}')
@@ -284,7 +291,7 @@ class RelatorioPro:
         #criando o relatório do mes escolhido
         linha_atual = self.planilha_separada.min_row
         self.planilha_separada.merge_cells(f'A{linha_atual}:F{linha_atual}')
-        self.planilha_separada[f'A{linha_atual}'].value = f'Previsão de Faturamento {mes}/{ano}'.upper()
+        self.planilha_separada[f'A{linha_atual}'].value = f'Previsão de Faturamento Próprio {mes}/{ano}'.upper()
         self.planilha_separada[f'A{linha_atual}'].alignment = Alignment(horizontal="center")
         self.planilha_separada[f'A{linha_atual}'].font = Font(bold=True)
 
