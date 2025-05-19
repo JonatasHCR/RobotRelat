@@ -21,7 +21,7 @@ from model.model_cliente import ModelCliente
 
 dotenv.load_dotenv()
 
-LIMIT_REGISTRO = 10 #os.getenv("LIMIT_REGISTRO")
+LIMIT_REGISTRO = int(os.getenv("LIMIT_REGISTRO"))
 
 class RepositoryCliente:
     def __init__(self) -> None:
@@ -80,10 +80,14 @@ class RepositoryCliente:
         try:
             self.conectar()
 
+            query = '''
+            INSERT INTO clientes
+                (nome,cc,descricao,tipo)
+            VALUES 
+                (?,?,?,?)
+            '''
             #inserindo os valores
-            self.cursor.execute('''
-            INSERT INTO clientes (nome,cc,descricao,tipo) VALUES (?,?,?,?)
-        ''', (cliente.nome,cliente.cc,cliente.descricao,cliente.tipo,)
+            self.cursor.execute(query,(cliente.nome,cliente.cc,cliente.descricao,cliente.tipo,)
             )
 
             self.connection.commit()
@@ -93,8 +97,15 @@ class RepositoryCliente:
     def verificar_centro_custo(self,centro_custo: str) -> bool:
         try:
             self.conectar()
-        
-            self.cursor.execute('SELECT COUNT(*) FROM clientes WHERE cc = ?',(centro_custo,))
+            
+            query = '''
+            SELECT 
+                COUNT(*) 
+            FROM clientes 
+            WHERE 
+                cc = ?'''
+            
+            self.cursor.execute(query,(centro_custo,))
 
             existe = True if self.cursor.fetchone()[0] else False
 
@@ -106,8 +117,12 @@ class RepositoryCliente:
     def contar_pagina(self) -> int:
         try:
             self.conectar()
-
-            self.cursor.execute('SELECT COUNT(*) FROM clientes')
+            
+            query ='''
+            SELECT 
+                COUNT(*) 
+            FROM clientes'''
+            self.cursor.execute(query)
             
             total_de_dados = self.cursor.fetchone()[0]
             

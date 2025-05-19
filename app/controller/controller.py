@@ -16,7 +16,7 @@ sys.path.insert(0,PROJECT_ROOT)
 #importações para funcionamento da classe
 from utils.utils import UtilsPro
 from service.service import ServicePro
-from model.model import ModelPro
+from model.model_relatorio import ModelPro
 
 #importação para a tipagem
 from customtkinter import CTkComboBox,CTkEntry

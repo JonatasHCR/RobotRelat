@@ -7,7 +7,7 @@ sys.path.insert(0,PROJECT_ROOT)
 from service.service_cliente import ServiceCliente
 from service.service_nota import ServiceNota
 from repository.repository import RepositoryPro
-from model.model import ModelPro
+from model.model_relatorio import ModelPro
 from utils.utils import UtilsPro
 from customtkinter import CTkComboBox,CTkEntry
 from datetime import datetime
@@ -34,11 +34,14 @@ class ServicePro:
 
         data = datetime(ano,mes+1,28) if datetime.now() < datetime(ano,mes+1,28) else datetime.now()
 
-        dados_mes = self.repository.retirar_mensal(mes,ano)
+        dados_mes = self.repository.retirar_mes_atual(mes,ano)
 
-        dados_all = self.repository.retirar_all(mes,ano,data)
+        dados_mes_anterior = self.repository.retirar_mes_anterior(mes,ano)
 
-        self.relatorio.mensal(dados_mes,dados_all,data)
+        total_periodo = self.repository.retirar_total_periodo(mes,ano)
+
+        self.relatorio.mensal(dados_mes,dados_mes_anterior,total_periodo)
+    
 
 
 

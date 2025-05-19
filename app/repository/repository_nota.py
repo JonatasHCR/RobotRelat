@@ -21,7 +21,7 @@ dotenv.load_dotenv()
 
 from model.model_nota import ModelNota
 
-LIMIT_REGISTRO = 10 #os.getenv("LIMIT_REGISTRO")
+LIMIT_REGISTRO = int(os.getenv("LIMIT_REGISTRO"))
 
 class RepositoryNota:
     def __init__(self) -> None:
@@ -55,8 +55,7 @@ class RepositoryNota:
                 ')'
             )
             
-            # Criando tabela relatório, com a chave 
-            # estrangeira da tabela clientes
+            # Criando tabela relatório, com a chave estrangeira da tabela clientes
             self.cursor.execute(
                 f'CREATE TABLE IF NOT EXISTS notas'
                 '('

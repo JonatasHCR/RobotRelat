@@ -17,11 +17,10 @@ import customtkinter as ctk
 
 from model.model_nota import ModelNota
 from model.model_cliente import ModelCliente
-from model.model import ModelPro
+from model.model_relatorio import ModelPro
 from config.logger import LoggerPro
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.styles import Font, NamedStyle, Border, Side,Alignment
-from openpyxl.utils import get_column_letter
 
 class UtilsPro:
     """
@@ -335,7 +334,7 @@ class UtilsPro:
     def style_font_planilha(self,planilha: Worksheet, inicio_linha: int, fim_linha: int, inicio_coluna: int, fim_coluna: int):
         for row in planilha.iter_rows(min_row=inicio_linha, max_row=fim_linha, min_col=inicio_coluna, max_col=fim_coluna):
             for cell in row:
-                cell.alignment = Alignment(horizontal="center")
+                cell.alignment = Alignment(horizontal="center", wrap_text=True)
                 cell.font = Font(bold=True)
     
     def style_alinhar_planilha(self,planilha: Worksheet, inicio_linha: int, fim_linha: int, inicio_coluna: int, fim_coluna: int):
@@ -348,10 +347,13 @@ class UtilsPro:
             for cell in row:
                 cell.style =style_real
     
-    def ajustar_colunas_planilha(self,planilha: Worksheet):
-        for col in planilha.iter_cols():
-            max_length = 0
-            col_letter = get_column_letter(col[0].column)
+    def ajustar_colunas_planilha(self,planilha: Worksheet,inicio_linha: int, fim_linha: int, inicio_coluna: int, fim_coluna: int):
+        for col in planilha.iter_cols(inicio_coluna,fim_coluna,inicio_linha,fim_linha):
+            col_letter = col[0].column_letter
+            if col_letter in ["D","E"]:
+                max_length = 0
+            else:
+                max_length = planilha.column_dimensions[col_letter].width
             for cell in col:
                 if cell.value:
                     max_length = max(max_length, len(str(cell.value)))

@@ -31,6 +31,7 @@ def criar_env():
             arq.write(f'DB_FILE = {DB_FILE}\n')
             arq.write(f'LOG_FILE = {LOG_FILE}\n')
             arq.write(f'LIMIT_REGISTRO = {LIMIT_REGISTRO}\n')
+            arq.write(f'PROJECT_ROOT = {PROJECT_ROOT}\n')
 
 #criando a pasta e o arquivo de log
 def criar_pasta_log():
