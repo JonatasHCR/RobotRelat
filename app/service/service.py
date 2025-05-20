@@ -6,7 +6,7 @@ sys.path.insert(0,PROJECT_ROOT)
 
 from service.service_cliente import ServiceCliente
 from service.service_nota import ServiceNota
-from repository.repository import RepositoryPro
+from app.repository.relatorio_view import RepositoryPro
 from model.model_relatorio import ModelPro
 from utils.utils import UtilsPro
 from customtkinter import CTkComboBox,CTkEntry

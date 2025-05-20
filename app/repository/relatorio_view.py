@@ -16,9 +16,10 @@ LIMIT_REGISTRO = int(os.getenv("LIMIT_REGISTRO"))
 class RepositoryPro:
     def __init__(self):
         self.utils = UtilsPro()
+        self.database = os.getenv('DB_FILE')
     
     def conectar(self) -> None:
-        self.connection = sqlite3.connect(os.getenv('DB_FILE'))
+        self.connection = sqlite3.connect(self.database)
         self.cursor = self.connection.cursor()
     
     def desconectar(self) -> None:

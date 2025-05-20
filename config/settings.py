@@ -16,6 +16,7 @@ sys.path.insert(0,PROJECT_ROOT)
 #Definindo os caminhos
 ENV_FILE = os.path.join('.env')
 DB_FILE = os.path.join("db.sqlite3")
+DB_FILE_TEST = os.path.join("db_teste.sqlite3")
 LOG_FILE = os.path.join('log','log.txt')
 LIMIT_REGISTRO = 15
 
@@ -29,6 +30,7 @@ def criar_env():
     if not os.path.exists(os.path.join('.env')):
         with open(ENV_FILE,'w',encoding='utf-8') as arq:
             arq.write(f'DB_FILE = {DB_FILE}\n')
+            arq.write(f'DB_FILE_TEST = {DB_FILE_TEST}\n')
             arq.write(f'LOG_FILE = {LOG_FILE}\n')
             arq.write(f'LIMIT_REGISTRO = {LIMIT_REGISTRO}\n')
             arq.write(f'PROJECT_ROOT = {PROJECT_ROOT}\n')
