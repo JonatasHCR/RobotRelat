@@ -187,12 +187,20 @@ class RepositoryNota:
         try:
             self.conectar()
 
-            self.cursor.execute(
-                """
+            query = """
             UPDATE notas
-            SET cc = ?, numero_nota = ?, valor_nota = ?, data_fat = ?, data_pag = ?,mes_ref = ?, ano_ref = ?
-            WHERE id = ?
-        """,
+            SET 
+                cc = ?, 
+                numero_nota = ?, 
+                valor_nota = ?, 
+                data_fat = ?, 
+                data_pag = ?,
+                mes_ref = ?, 
+                ano_ref = ?
+            WHERE id = ?;"""
+
+            self.cursor.execute(
+                query,
                 (
                     nota.cc,
                     nota.numero_nota,

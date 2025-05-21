@@ -5,15 +5,14 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0,PROJECT_ROOT)
 
 from utils.utils import UtilsPro
-from model.model_relatorio import ModelPro
-from datetime import datetime
+from model.model_relatorio import ModelRelatorio
 from calendar import monthrange
 
 import sqlite3
 
 LIMIT_REGISTRO = int(os.getenv("LIMIT_REGISTRO"))
 
-class RepositoryPro:
+class RelatorioView:
     def __init__(self):
         self.utils = UtilsPro()
         self.database = os.getenv('DB_FILE')
@@ -50,22 +49,11 @@ class RepositoryPro:
         finally:
             self.desconectar()
     
-    def retirar(self, pagina: int)-> list[ModelPro]:
+    def retirar(self, pagina: int)-> list[ModelRelatorio]:
         try:
             self.conectar()
             query = '''
-            SELECT 
-                clientes.nome,
-                clientes.tipo,
-                notas.valor_nota,
-                clientes.cc,
-                notas.data_fat,
-                notas.data_pag,
-                clientes.descricao,
-                notas.mes_ref,
-                notas.ano_ref 
-            FROM clientes 
-            JOIN notas ON clientes.cc = notas.cc 
+            SELECT * FROM vw_relatorios
             LIMIT ? OFFSET ?'''
             self.cursor.execute(query,(LIMIT_REGISTRO,pagina*LIMIT_REGISTRO,))
             relatorio = self.cursor.fetchall()
@@ -73,14 +61,14 @@ class RepositoryPro:
             lista = []
 
             for dados in relatorio:
-                lista.append(ModelPro(*dados))
+                lista.append(ModelRelatorio(*dados))
             
             return lista
         
         finally:
             self.desconectar()
     
-    def retirar_mes_atual(self,mes_ref: int, ano_ref: int) -> list[ModelPro]:
+    def retirar_mes_atual(self,mes_ref: int, ano_ref: int) -> list[ModelRelatorio]:
         try:
             self.conectar()
             query = '''
@@ -116,7 +104,7 @@ class RepositoryPro:
 
             lista = []
             for dados in relatorio:
-                lista.append(ModelPro(*dados))
+                lista.append(ModelRelatorio(*dados))
 
             
             
@@ -125,7 +113,7 @@ class RepositoryPro:
         finally:
             self.desconectar()
     
-    def retirar_mes_anterior(self, mes_ref: int, ano_ref: int) -> list[ModelPro]:
+    def retirar_mes_anterior(self, mes_ref: int, ano_ref: int) -> list[ModelRelatorio]:
         try:
             if mes_ref + 1 < 10:
                 mes = f'0{mes_ref+1}'
@@ -168,7 +156,7 @@ class RepositoryPro:
             lista = []
 
             for dados in relatorio:
-                lista.append(ModelPro(*dados))
+                lista.append(ModelRelatorio(*dados))
             
             return lista
         
@@ -218,8 +206,3 @@ class RepositoryPro:
         
         finally:
             self.desconectar()
-
-
-if __name__ == "__main__":
-    teste = RepositoryPro()
-    print(teste.retirar_total_periodo(2,2025))

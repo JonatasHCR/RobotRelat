@@ -189,12 +189,13 @@ class RepositoryCliente:
         try:
             self.conectar()
 
-            self.cursor.execute(
-                """
+            query = """
             UPDATE clientes
             SET nome = ?, cc = ?, descricao = ?, tipo = ?
-            WHERE id = ?;
-        """,
+            WHERE id = ?;"""
+
+            self.cursor.execute(
+                query,
                 (
                     cliente.nome,
                     cliente.cc,

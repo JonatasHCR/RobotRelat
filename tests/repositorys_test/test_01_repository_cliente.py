@@ -58,17 +58,17 @@ class TestRepositoryCliente:
             repository_teste.database = getenv("DB_FILE_TEST")
 
             repository_teste.criar_tabelas()
-            
+
             id_teste = 1
             nome_teste = "Teste"
             centro_de_custo_teste = "Teste"
             tipo_teste = "Próprio"
             descricao_teste = "teste testando"
-            
+
             cliente_teste = ModelCliente(
                 id_teste, nome_teste, centro_de_custo_teste, tipo_teste, descricao_teste
             )
-            
+
             repository_teste.inserir(cliente_teste)
 
             query = """SELECT * FROM clientes"""
@@ -77,16 +77,16 @@ class TestRepositoryCliente:
 
             if not existe:
                 raise ValueError(f"Cliente não foi inserido")
-            
+
             repository_teste.desconectar()
-            
+
             assert True
 
         except Exception as error:
             print("Tipo do erro:", type(error).__name__)
             print("Mensagem:", str(error))
             assert False
-    
+
     def test_retirar_dados_na_tabela(self):
         try:
             repository_teste = RepositoryCliente()
@@ -98,6 +98,62 @@ class TestRepositoryCliente:
                 raise ValueError(f"Dados não estão sendo retornados")
 
             assert True
+
+        except Exception as error:
+            print("Tipo do erro:", type(error).__name__)
+            print("Mensagem:", str(error))
+            assert False
+
+    def test_modificar_dados_na_tabela(self):
+        try:
+            repository_teste = RepositoryCliente()
+            repository_teste.database = getenv("DB_FILE_TEST")
+
+            repository_teste.criar_tabelas()
+
+            id_teste = 1
+            nome_teste = "Teste_alterado"
+            centro_de_custo_teste = "Teste_alterado"
+            tipo_teste = "Consorcio"
+            descricao_teste = "teste testando alterado"
+
+            cliente_teste_alterado = ModelCliente(
+                id_teste, nome_teste, centro_de_custo_teste, tipo_teste, descricao_teste
+            )
+
+            repository_teste.modificar(cliente_teste_alterado)
+
+            verificar = repository_teste.retirar(0)
+
+            assert verificar[0].__dict__ == cliente_teste_alterado.__dict__
+
+        except Exception as error:
+            print("Tipo do erro:", type(error).__name__)
+            print("Mensagem:", str(error))
+            assert False
+
+    def test_deletar_dados_na_tabela(self):
+        try:
+            repository_teste = RepositoryCliente()
+            repository_teste.database = getenv("DB_FILE_TEST")
+
+            repository_teste.criar_tabelas()
+
+            id_teste = 1
+            nome_teste = "Teste_alterado"
+            centro_de_custo_teste = "Teste_alterado"
+            tipo_teste = "Consorcio"
+            descricao_teste = "teste testando alterado"
+
+            cliente_teste_deletado = ModelCliente(
+                id_teste, nome_teste, centro_de_custo_teste, tipo_teste, descricao_teste
+            )
+
+            repository_teste.deletar(cliente_teste_deletado)
+
+            verificar = repository_teste.retirar(0)
+
+            assert len(verificar) == 0
 
         except Exception as error:
             print("Tipo do erro:", type(error).__name__)

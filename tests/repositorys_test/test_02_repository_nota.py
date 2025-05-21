@@ -68,6 +68,7 @@ class TestRepositoryNota:
             data_pag_teste = date.today().strftime("%d/%m/%Y")
             mes_ref_teste = 2
             ano_ref_teste = 2025
+
             nota_teste = ModelNota(
                 id_teste,
                 centro_de_custo_teste,
@@ -108,6 +109,82 @@ class TestRepositoryNota:
                 raise ValueError(f"Dados não estão sendo retornados")
 
             assert True
+
+        except Exception as error:
+            print("Tipo do erro:", type(error).__name__)
+            print("Mensagem:", str(error))
+            assert False
+
+    def test_modificar_dados_na_tabela(self):
+        try:
+            repository_teste = RepositoryNota()
+            repository_teste.database = getenv("DB_FILE_TEST")
+
+            repository_teste.criar_tabelas()
+
+            id_teste = 1
+            centro_de_custo_teste = "Teste_alterado"
+            numero_nota_teste = "456"
+            valor_nota_teste = 456.7
+            data_fat_teste = date(2024, 7, 21).strftime("%d/%m/%Y")
+            data_pag_teste = date(2024, 7, 21).strftime("%d/%m/%Y")
+            mes_ref_teste = 7
+            ano_ref_teste = 2024
+
+            nota_teste_alterada = ModelNota(
+                id_teste,
+                centro_de_custo_teste,
+                numero_nota_teste,
+                valor_nota_teste,
+                data_fat_teste,
+                data_pag_teste,
+                mes_ref_teste,
+                ano_ref_teste,
+            )
+
+            repository_teste.modificar(nota_teste_alterada)
+
+            verificar = repository_teste.retirar(0)
+
+            assert verificar[0].__dict__ == nota_teste_alterada.__dict__
+
+        except Exception as error:
+            print("Tipo do erro:", type(error).__name__)
+            print("Mensagem:", str(error))
+            assert False
+
+    def test_deletar_dados_na_tabela(self):
+        try:
+            repository_teste = RepositoryNota()
+            repository_teste.database = getenv("DB_FILE_TEST")
+
+            repository_teste.criar_tabelas()
+
+            id_teste = 1
+            centro_de_custo_teste = "Teste_alterado"
+            numero_nota_teste = "456"
+            valor_nota_teste = 456.7
+            data_fat_teste = date(2024, 7, 21).strftime("%d/%m/%Y")
+            data_pag_teste = date(2024, 7, 21).strftime("%d/%m/%Y")
+            mes_ref_teste = 7
+            ano_ref_teste = 2024
+
+            nota_teste_deletada = ModelNota(
+                id_teste,
+                centro_de_custo_teste,
+                numero_nota_teste,
+                valor_nota_teste,
+                data_fat_teste,
+                data_pag_teste,
+                mes_ref_teste,
+                ano_ref_teste,
+            )
+
+            repository_teste.deletar(nota_teste_deletada)
+
+            verificar = repository_teste.retirar(0)
+
+            assert len(verificar) == 0
 
         except Exception as error:
             print("Tipo do erro:", type(error).__name__)
