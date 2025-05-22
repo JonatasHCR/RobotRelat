@@ -16,9 +16,7 @@ class ModelCliente:
     e coloca seus respectivos valores
     """
 
-    def __init__(
-        self, id: int, nome: str, cc: str, tipo: str, descricao: str
-    ) -> None:
+    def __init__(self, id: int, nome: str, cc: str, tipo: str, descricao: str) -> None:
         """
         Inicializa criando os atributos relacionado as colunas,
         e colocando já os valores

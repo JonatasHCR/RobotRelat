@@ -6,11 +6,15 @@ de banco de dados(CRUD).
 
 """
 
-import os
-import sys
+from os import getenv
+from sys import path
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
-sys.path.insert(0, PROJECT_ROOT)
+from dotenv import load_dotenv
+
+load_dotenv()
+
+PROJECT_ROOT = getenv("PROJECT_ROOT")
+path.insert(0, PROJECT_ROOT)
 
 from model.model_nota import ModelNota
 from utils.utils_nota import UtilsNota

@@ -7,22 +7,24 @@ gráfica, e a resposta do service relacionado ao modelo de relatório.
 """
 
 # importações para que consiga importar desde a raiz do projeto
-import sys
-import os
+from os import getenv
+from sys import path
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
-sys.path.insert(0, PROJECT_ROOT)
+from dotenv import load_dotenv
+from customtkinter import CTkComboBox, CTkEntry
+
+load_dotenv()
+
+PROJECT_ROOT = getenv("PROJECT_ROOT")
+path.insert(0, PROJECT_ROOT)
 
 # importações para funcionamento da classe
-from utils.utils import UtilsPro
+from utils.utils_relatorio import UtilsRelatorio
 from app.service.service_relatorio import ServiceRelatorio
 from model.model_relatorio import ModelRelatorio
 
-# importação para a tipagem
-from customtkinter import CTkComboBox, CTkEntry
 
-
-class ControllerPro:
+class ControllerRelatorio:
     """
     Classe responsável pelo controle das operações do sistema financeiro.
 
@@ -37,7 +39,7 @@ class ControllerPro:
 
         Cria instâncias das classes ServicePro e UtilsPro.
         """
-        self.utils = UtilsPro()
+        self.utils = UtilsRelatorio()
         self.service = ServiceRelatorio()
 
     def contar_pagina(self) -> int:

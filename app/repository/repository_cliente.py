@@ -8,29 +8,30 @@ retirar.
 """
 
 # importações para que consiga importar desde a raiz do projeto
-import os
-import sys
-import sqlite3
+from os import getenv
+from sys import path
+from sqlite3 import connect
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
-sys.path.insert(0, PROJECT_ROOT)
+from dotenv import load_dotenv
 
-import dotenv
+load_dotenv()
+
+PROJECT_ROOT = getenv("PROJECT_ROOT")
+path.insert(0, PROJECT_ROOT)
 
 from model.model_cliente import ModelCliente
 
-dotenv.load_dotenv()
 
-LIMIT_REGISTRO = int(os.getenv("LIMIT_REGISTRO"))
+LIMIT_REGISTRO = int(getenv("LIMIT_REGISTRO"))
 
 
 class RepositoryCliente:
     def __init__(self) -> None:
-        self.database = os.getenv("DB_FILE")
+        self.database = getenv("DB_FILE")
         self.criar_tabelas()
 
     def conectar(self) -> None:
-        self.connection = sqlite3.connect(self.database)
+        self.connection = connect(self.database)
         self.cursor = self.connection.cursor()
 
     def desconectar(self) -> None:

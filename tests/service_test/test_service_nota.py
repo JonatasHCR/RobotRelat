@@ -58,7 +58,7 @@ class TestServiceNota:
                 ano_ref_teste,
             )
             nota_teste_copy = nota_teste.__dict__.copy()
-            
+
             service_teste.repository.database = getenv("DB_FILE_TEST")
             service_teste.inserir(nota_teste)
 
@@ -68,14 +68,16 @@ class TestServiceNota:
             verificar = curso.execute("SELECT * FROM notas").fetchone()
 
             assert not ModelNota(*verificar).__dict__ == nota_teste_copy
-            assert ModelNota(*verificar).__dict__ == service_teste.formatar(ModelNota(**nota_teste_copy)).__dict__
+            assert (
+                ModelNota(*verificar).__dict__
+                == service_teste.formatar(ModelNota(**nota_teste_copy)).__dict__
+            )
 
-        
         except Exception as error:
             print("Tipo do erro:", type(error).__name__)
             print("Mensagem:", str(error))
             assert False
-    
+
     def test_modificar_dados_formatados_na_tabela(self):
         try:
             service_teste = ServiceCliente()
@@ -99,8 +101,8 @@ class TestServiceNota:
             centro_de_custo_teste = "   Teste alterado    "
             numero_nota_teste = "456   "
             valor_nota_teste = "456,7"
-            data_fat_teste = date(2026,3,12).strftime("%d/%m/%Y")
-            data_pag_teste = date(2026,3,12).strftime("%d/%m/%Y")
+            data_fat_teste = date(2026, 3, 12).strftime("%d/%m/%Y")
+            data_pag_teste = date(2026, 3, 12).strftime("%d/%m/%Y")
             mes_ref_teste = "3  "
             ano_ref_teste = "2026  "
 
@@ -115,7 +117,7 @@ class TestServiceNota:
                 ano_ref_teste,
             )
             nota_teste_alterada_copy = nota_teste_alterada.__dict__.copy()
-            
+
             service_teste.repository.database = getenv("DB_FILE_TEST")
             service_teste.modificar(nota_teste_alterada)
 
@@ -124,13 +126,18 @@ class TestServiceNota:
 
             verificar = curso.execute("SELECT * FROM notas").fetchone()
 
-            assert ModelNota(*verificar).__dict__ == service_teste.formatar(ModelNota(**nota_teste_alterada_copy)).__dict__
-        
+            assert (
+                ModelNota(*verificar).__dict__
+                == service_teste.formatar(
+                    ModelNota(**nota_teste_alterada_copy)
+                ).__dict__
+            )
+
         except Exception as error:
             print("Tipo do erro:", type(error).__name__)
             print("Mensagem:", str(error))
             assert False
-    
+
     def test_retirar_dados_formatados_na_tabela(self):
         try:
             service_teste = ServiceNota()
@@ -139,8 +146,8 @@ class TestServiceNota:
             centro_de_custo_teste = "   Teste alterado    "
             numero_nota_teste = "456   "
             valor_nota_teste = "456,7"
-            data_fat_teste = date(2026,3,12).strftime("%d/%m/%Y")
-            data_pag_teste = date(2026,3,12).strftime("%d/%m/%Y")
+            data_fat_teste = date(2026, 3, 12).strftime("%d/%m/%Y")
+            data_pag_teste = date(2026, 3, 12).strftime("%d/%m/%Y")
             mes_ref_teste = "3  "
             ano_ref_teste = "2026  "
 
@@ -154,17 +161,22 @@ class TestServiceNota:
                 mes_ref_teste,
                 ano_ref_teste,
             )
-            
+
             service_teste.repository.database = getenv("DB_FILE_TEST")
             verificar = service_teste.retirar(0)
 
-            assert verificar[0].__dict__ == service_teste.utils.customizar([service_teste.formatar(nota_teste_alterada)])[0].__dict__
-        
+            assert (
+                verificar[0].__dict__
+                == service_teste.utils.customizar(
+                    [service_teste.formatar(nota_teste_alterada)]
+                )[0].__dict__
+            )
+
         except Exception as error:
             print("Tipo do erro:", type(error).__name__)
             print("Mensagem:", str(error))
             assert False
-    
+
     def test_deletar_dados_formatados_na_tabela(self):
         try:
             service_teste = ServiceCliente()
@@ -188,8 +200,8 @@ class TestServiceNota:
             centro_de_custo_teste = "   Teste alterado    "
             numero_nota_teste = "456   "
             valor_nota_teste = "456,7"
-            data_fat_teste = date(2026,3,12).strftime("%d/%m/%Y")
-            data_pag_teste = date(2026,3,12).strftime("%d/%m/%Y")
+            data_fat_teste = date(2026, 3, 12).strftime("%d/%m/%Y")
+            data_pag_teste = date(2026, 3, 12).strftime("%d/%m/%Y")
             mes_ref_teste = "3  "
             ano_ref_teste = "2026  "
 
@@ -214,9 +226,9 @@ class TestServiceNota:
 
             if verificar:
                 assert False
-            
+
             assert True
-        
+
         except Exception as error:
             print("Tipo do erro:", type(error).__name__)
             print("Mensagem:", str(error))

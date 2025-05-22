@@ -19,7 +19,7 @@ sys.path.insert(0,PROJECT_ROOT)
 import customtkinter as ctk
 
 #importações para funcionamento da classe
-from controller.controller import ControllerPro
+from app.controller.controller_relatorio import ControllerRelatorio
 from utils.utils import UtilsPro
 from view.view_cliente import ViewCliente
 from view.view_nota import ViewNota
@@ -34,7 +34,7 @@ class App(ctk.CTk):
     A classe inicializa a interface gráfica, configura os botões principais e define 
     as janelas secundárias para cadastro de clientes, adição de notas e geração de relatórios.
     """
-    def __init__(self,controller: ControllerPro) -> None:
+    def __init__(self,controller: ControllerRelatorio) -> None:
         '''
         Inicializa a inicialização da classe pai(CTk), e configura a janela principal
 

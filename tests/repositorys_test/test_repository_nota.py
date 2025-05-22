@@ -1,9 +1,10 @@
 from sys import path
 from os import getenv
+from datetime import date
 
 from dotenv import load_dotenv
 from pytest import mark
-from datetime import date
+
 
 load_dotenv()
 

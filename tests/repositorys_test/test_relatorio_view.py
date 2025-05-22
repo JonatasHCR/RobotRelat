@@ -71,7 +71,6 @@ class TestRelatorioView:
             if len(dados) == 0:
                 raise ValueError(f"Dados não estão sendo retornados")
 
-
             repository_teste_cliente.deletar(cliente_teste)
             repository_teste_nota.deletar(nota_teste)
 

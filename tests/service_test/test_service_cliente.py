@@ -13,6 +13,7 @@ path.insert(0, PROJECT_ROOT)
 from app.service.service_cliente import ServiceCliente
 from app.model.model_cliente import ModelCliente
 
+
 @mark.service
 class TestServiceCliente:
     def test_inserir_dados_formatados_na_tabela(self):
@@ -39,13 +40,16 @@ class TestServiceCliente:
             verificar = curso.execute("SELECT * FROM clientes").fetchone()
 
             assert not ModelCliente(*verificar).__dict__ == cliente_teste_copy
-            assert ModelCliente(*verificar).__dict__ == service_teste.formatar(ModelCliente(**cliente_teste_copy)).__dict__
-        
+            assert (
+                ModelCliente(*verificar).__dict__
+                == service_teste.formatar(ModelCliente(**cliente_teste_copy)).__dict__
+            )
+
         except Exception as error:
             print("Tipo do erro:", type(error).__name__)
             print("Mensagem:", str(error))
             assert False
-    
+
     def test_modificar_dados_formatados_na_tabela(self):
         try:
             service_teste = ServiceCliente()
@@ -69,13 +73,18 @@ class TestServiceCliente:
 
             verificar = curso.execute("SELECT * FROM clientes").fetchone()
 
-            assert ModelCliente(*verificar).__dict__ == service_teste.formatar(ModelCliente(**cliente_teste_alterado_copy)).__dict__
-        
+            assert (
+                ModelCliente(*verificar).__dict__
+                == service_teste.formatar(
+                    ModelCliente(**cliente_teste_alterado_copy)
+                ).__dict__
+            )
+
         except Exception as error:
             print("Tipo do erro:", type(error).__name__)
             print("Mensagem:", str(error))
             assert False
-    
+
     def test_retirar_dados_formatados_na_tabela(self):
         try:
             service_teste = ServiceCliente()
@@ -93,8 +102,11 @@ class TestServiceCliente:
             service_teste.repository.database = getenv("DB_FILE_TEST")
             verificar = service_teste.retirar(0)
 
-            assert verificar[0].__dict__ == service_teste.formatar(cliente_teste_alterado).__dict__
-        
+            assert (
+                verificar[0].__dict__
+                == service_teste.formatar(cliente_teste_alterado).__dict__
+            )
+
         except Exception as error:
             print("Tipo do erro:", type(error).__name__)
             print("Mensagem:", str(error))
@@ -124,9 +136,9 @@ class TestServiceCliente:
 
             if verificar:
                 assert False
-            
+
             assert True
-        
+
         except Exception as error:
             print("Tipo do erro:", type(error).__name__)
             print("Mensagem:", str(error))

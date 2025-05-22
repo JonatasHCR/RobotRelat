@@ -8,12 +8,14 @@ listas, entre outras ajudas para o projeto.
 
 import os
 import sys
+from datetime import datetime
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, PROJECT_ROOT)
 
 
-from datetime import datetime
+from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.styles import Font, NamedStyle, Border, Side, Alignment
 
 from app.model.model_relatorio import ModelRelatorio
 
@@ -105,3 +107,103 @@ class UtilsRelatorio:
             data_for = data_for.strftime("%d/%m/%Y")
 
         return data_for
+
+    def style_font_planilha(
+        self,
+        planilha: Worksheet,
+        inicio_linha: int,
+        fim_linha: int,
+        inicio_coluna: int,
+        fim_coluna: int,
+    ):
+        for row in planilha.iter_rows(
+            min_row=inicio_linha,
+            max_row=fim_linha,
+            min_col=inicio_coluna,
+            max_col=fim_coluna,
+        ):
+            for cell in row:
+                cell.alignment = Alignment(horizontal="center", wrap_text=True)
+                cell.font = Font(bold=True)
+
+    def style_alinhar_planilha(
+        self,
+        planilha: Worksheet,
+        inicio_linha: int,
+        fim_linha: int,
+        inicio_coluna: int,
+        fim_coluna: int,
+    ):
+        for row in planilha.iter_rows(
+            min_row=inicio_linha,
+            max_row=fim_linha,
+            min_col=inicio_coluna,
+            max_col=fim_coluna,
+        ):
+            for cell in row:
+                cell.alignment = Alignment(horizontal="center")
+
+    def style_real_planilha(
+        self,
+        planilha: Worksheet,
+        inicio_linha: int,
+        fim_linha: int,
+        inicio_coluna: int,
+        fim_coluna: int,
+        style_real: NamedStyle,
+    ):
+        for row in planilha.iter_rows(
+            min_row=inicio_linha,
+            max_row=fim_linha,
+            min_col=inicio_coluna,
+            max_col=fim_coluna,
+        ):
+            for cell in row:
+                cell.style = style_real
+
+    def ajustar_colunas_planilha(
+        self,
+        planilha: Worksheet,
+        inicio_linha: int,
+        fim_linha: int,
+        inicio_coluna: int,
+        fim_coluna: int,
+    ):
+        for col in planilha.iter_cols(
+            inicio_coluna, fim_coluna, inicio_linha, fim_linha
+        ):
+            col_letter = col[0].column_letter
+            if col_letter in ["D", "E"]:
+                max_length = 0
+            else:
+                max_length = planilha.column_dimensions[col_letter].width
+            for cell in col:
+                if cell.value:
+                    max_length = max(max_length, len(str(cell.value)))
+            planilha.column_dimensions[col_letter].width = max_length + 2
+
+    def style_borda_planilha(
+        self,
+        planilha: Worksheet,
+        inicio_linha: int,
+        fim_linha: int,
+        inicio_coluna: int,
+        fim_coluna: int,
+    ) -> None:
+
+        # Definir um estilo de borda em negrito
+        borda_negrito = Border(
+            left=Side(style="thin"),  # Borda esquerda grossa
+            right=Side(style="thin"),  # Borda direita grossa
+            top=Side(style="thin"),  # Borda superior grossa
+            bottom=Side(style="thin"),  # Borda inferior grossa
+        )
+
+        for row in planilha.iter_rows(
+            min_row=inicio_linha,
+            max_row=fim_linha,
+            min_col=inicio_coluna,
+            max_col=fim_coluna,
+        ):
+            for cell in row:
+                cell.border = borda_negrito

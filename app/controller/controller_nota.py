@@ -1,28 +1,29 @@
-'''
+"""
 controller_nota.py
 
 modulo que estará contendo a classe que faz a ponte entre a parte
 gráfica, e a resposta do service relacionado ao nota.
 
-'''
+"""
 
-#importações para que consiga importar desde a raiz do projeto
-import sys
-import os
-
-PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
-sys.path.insert(0,PROJECT_ROOT)
-
-#importações para funcionamento da classe
-from model.model_nota import ModelNota
-from service.service_nota import ServiceNota
-from utils.utils import UtilsPro
-
-#importando o erro
+# importações para que consiga importar desde a raiz do projeto
+from os import getenv
+from sys import path
 from sqlite3 import IntegrityError
 
-#importação para a tipagem
-from customtkinter import CTkLabel,CTkEntry
+from dotenv import load_dotenv
+from customtkinter import CTkLabel, CTkEntry
+
+load_dotenv()
+
+PROJECT_ROOT = getenv("PROJECT_ROOT")
+path.insert(0, PROJECT_ROOT)
+
+# importações para funcionamento da classe
+from model.model_nota import ModelNota
+from service.service_nota import ServiceNota
+from utils.utils_nota import UtilsNota
+
 
 class ControllerNota:
     """
@@ -35,11 +36,11 @@ class ControllerNota:
     def __init__(self):
         """
         Inicializa a classe ControllerPro.
-        
+
         Cria instâncias das classes ServiceNota e UtilsPro.
         """
         self.service = ServiceNota()
-        self.utils = UtilsPro()
+        self.utils = UtilsNota()
 
     def cadastrar(self, texto_feedback: CTkLabel, dicionario: dict) -> None:
         """
@@ -50,62 +51,74 @@ class ControllerNota:
             dicionario(dict[str,CTkEntry]): Dicionário contendo os dados da nota a serem cadastrados.
         """
 
-        #pegando a quantidade de registros que é pra ser feito
+        # pegando a quantidade de registros que é pra ser feito
         quant = int(dicionario["Quantidade de Registros"].get())
 
-        #pegando os dados das entrys
-        centro_custo = dicionario['Centro de Custo'].get()
-        numero_nota = dicionario['Numero da Nota'].get()
-        valor_nota = dicionario['Valor da Nota'].get()
-        data_fat = dicionario['Data de Faturamento'].get()
-        data_pag = dicionario['Data de Pagamento'].get()
+        # pegando os dados das entrys
+        centro_custo = dicionario["Centro de Custo"].get()
+        numero_nota = dicionario["Numero da Nota"].get()
+        valor_nota = dicionario["Valor da Nota"].get()
+        data_fat = dicionario["Data de Faturamento"].get()
+        data_pag = dicionario["Data de Pagamento"].get()
         mes_ref = dicionario["Mês de Referência"].get()
-        ano_ref = dicionario['Ano de Referência'].get()
+        ano_ref = dicionario["Ano de Referência"].get()
 
-        #criando a instancia com os dados
-        nota = ModelNota('',centro_custo,numero_nota,valor_nota,data_fat,data_pag,mes_ref,ano_ref)
+        # criando a instancia com os dados
+        nota = ModelNota(
+            "",
+            centro_custo,
+            numero_nota,
+            valor_nota,
+            data_fat,
+            data_pag,
+            mes_ref,
+            ano_ref,
+        )
 
-        #verificando se os dados estão corretos
+        # verificando se os dados estão corretos
         try:
-            #acionando o service pra tentar inserir 
+            # acionando o service pra tentar inserir
             self.service.inserir(nota)
 
-            #dando o resultado do cadastro pro usuário
-            texto_feedback.configure(text='Nota cadastrada com sucesso!!', text_color='green')
+            # dando o resultado do cadastro pro usuário
+            texto_feedback.configure(
+                text="Nota cadastrada com sucesso!!", text_color="green"
+            )
 
-            #limpando ou não as entrys
-            self.utils.apagar_valores(dicionario,quant,nota=True)
+            # limpando ou não as entrys
+            self.utils.apagar_valores(dicionario, quant, nota=True)
         except:
-            #dando o resultado do cadastro pro usuário
-            texto_feedback.configure(text='Erro ao cadastrar nota', text_color='red')
+            # dando o resultado do cadastro pro usuário
+            texto_feedback.configure(text="Erro ao cadastrar nota", text_color="red")
 
     def contar_pagina(self) -> int:
         """
-        Aciona o service para contar o número 
+        Aciona o service para contar o número
         de páginas disponíveis para nota
 
-        return: 
+        return:
             (int): Número total de páginas.
         """
         return self.service.paginas()
 
     def retirar(self, pagina: int) -> list[ModelNota]:
         """
-        Aciona o service para recuperar a 
+        Aciona o service para recuperar a
         lista das notas cadastradas.
 
         param:
             pagina(int): Número da página de registro a ser recuperada.
-        return: 
-            (list[ModelNota]): Lista contendo os dados 
+        return:
+            (list[ModelNota]): Lista contendo os dados
             em instâncias do modelo nota
         """
         return self.service.retirar(pagina)
 
-
-    def modificar(self, dados: list[dict[str,CTkEntry]], texto_feedback: CTkLabel) -> None:
+    def modificar(
+        self, dados: list[dict[str, CTkEntry]], texto_feedback: CTkLabel
+    ) -> None:
         """
-        Aciona o service para modificar 
+        Aciona o service para modificar
         os dados das notas cadastradas.
 
         param:
@@ -115,8 +128,8 @@ class ControllerNota:
         dado_error = []
         for dado in dados:
 
-            #pegando os dados das entrys
-            id_nota =  int(dado['id'].get())
+            # pegando os dados das entrys
+            id_nota = int(dado["id"].get())
             centro_custo = dado["Centro de Custo"].get()
             numero_nota = dado["Numero da Nota"].get()
             valor_nota = dado["Valor da Nota"].get()
@@ -125,27 +138,41 @@ class ControllerNota:
             mes_ref = dado["Mês de Referência"].get()
             ano_ref = dado["Ano de Referência"].get()
 
-            #criando a instancia com os dados
-            nota = ModelNota(id_nota,centro_custo,numero_nota,valor_nota,data_fat,data_pag,mes_ref,ano_ref)
-            
-            #verificando se os dados estão corretos
+            # criando a instancia com os dados
+            nota = ModelNota(
+                id_nota,
+                centro_custo,
+                numero_nota,
+                valor_nota,
+                data_fat,
+                data_pag,
+                mes_ref,
+                ano_ref,
+            )
+
+            # verificando se os dados estão corretos
             try:
-                #acionando o service pra tentar modificar
+                # acionando o service pra tentar modificar
                 self.service.modificar(nota)
 
-            except (IntegrityError,ValueError):
-                #caso erro acrescentando qual modificação deu erro
+            except (IntegrityError, ValueError):
+                # caso erro acrescentando qual modificação deu erro
                 dado_error.append(nota)
-        
-        #verificando se teve dados que deram erro
+
+        # verificando se teve dados que deram erro
         if len(dado_error) > 0:
-            texto_feedback.configure(text=f'Não foi possível alterar essas notas: {dado_error}', text_color='red')
+            texto_feedback.configure(
+                text=f"Não foi possível alterar essas notas: {dado_error}",
+                text_color="red",
+            )
         else:
-            texto_feedback.configure(text='notas alteradas com sucesso!!', text_color='green')
-    
-    def deletar(self,nota: ModelNota) -> None:
+            texto_feedback.configure(
+                text="notas alteradas com sucesso!!", text_color="green"
+            )
+
+    def deletar(self, nota: ModelNota) -> None:
         """
-        Aciona o service para deletar 
+        Aciona o service para deletar
         a nota do banco.
 
         param:
