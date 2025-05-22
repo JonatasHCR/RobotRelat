@@ -13,7 +13,7 @@ path.insert(0, PROJECT_ROOT)
 
 
 from app.repository.relatorio_view import RelatorioView
-from model.model_relatorio import ModelRelatorio
+from app.model.model_relatorio import ModelRelatorio
 from utils.utils_relatorio import UtilsRelatorio
 from config.relatorio import RelatorioPro
 

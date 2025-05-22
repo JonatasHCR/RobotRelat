@@ -19,7 +19,7 @@ load_dotenv()
 PROJECT_ROOT = getenv("PROJECT_ROOT")
 path.insert(0, PROJECT_ROOT)
 
-from model.model_cliente import ModelCliente
+from app.model.model_cliente import ModelCliente
 
 
 LIMIT_REGISTRO = int(getenv("LIMIT_REGISTRO"))

@@ -21,8 +21,8 @@ path.insert(0, PROJECT_ROOT)
 
 # importações para funcionamento da classe
 from app.service.service_cliente import ServiceCliente
-from utils.utils_cliente import UtilsCliente
 from app.model.model_cliente import ModelCliente
+from utils.utils_cliente import UtilsCliente
 
 
 class ControllerCliente:

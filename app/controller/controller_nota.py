@@ -20,8 +20,8 @@ PROJECT_ROOT = getenv("PROJECT_ROOT")
 path.insert(0, PROJECT_ROOT)
 
 # importações para funcionamento da classe
-from model.model_nota import ModelNota
-from service.service_nota import ServiceNota
+from app.service.service_nota import ServiceNota
+from app.model.model_nota import ModelNota
 from utils.utils_nota import UtilsNota
 
 

@@ -10,8 +10,8 @@ load_dotenv()
 PROJECT_ROOT = getenv("PROJECT_ROOT")
 path.insert(0, PROJECT_ROOT)
 
-from utils.utils import UtilsPro
-from model.model_relatorio import ModelRelatorio
+from app.model.model_relatorio import ModelRelatorio
+from utils.utils_relatorio import UtilsRelatorio
 
 
 LIMIT_REGISTRO = int(getenv("LIMIT_REGISTRO"))
@@ -19,7 +19,7 @@ LIMIT_REGISTRO = int(getenv("LIMIT_REGISTRO"))
 
 class RelatorioView:
     def __init__(self):
-        self.utils = UtilsPro()
+        self.utils = UtilsRelatorio()
         self.database = getenv("DB_FILE")
 
     def conectar(self) -> None:

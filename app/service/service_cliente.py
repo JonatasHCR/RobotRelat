@@ -17,10 +17,10 @@ load_dotenv()
 PROJECT_ROOT = getenv("PROJECT_ROOT")
 path.insert(0, PROJECT_ROOT)
 
-from model.model_cliente import ModelCliente
+from app.repository.repository_cliente import RepositoryCliente
+from app.model.model_cliente import ModelCliente
 from utils.utils_cliente import UtilsCliente
 from config.logger import LoggerPro
-from repository.repository_cliente import RepositoryCliente
 
 
 class ServiceCliente:

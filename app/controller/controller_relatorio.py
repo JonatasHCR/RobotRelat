@@ -19,9 +19,9 @@ PROJECT_ROOT = getenv("PROJECT_ROOT")
 path.insert(0, PROJECT_ROOT)
 
 # importações para funcionamento da classe
-from utils.utils_relatorio import UtilsRelatorio
 from app.service.service_relatorio import ServiceRelatorio
-from model.model_relatorio import ModelRelatorio
+from app.model.model_relatorio import ModelRelatorio
+from utils.utils_relatorio import UtilsRelatorio
 
 
 class ControllerRelatorio:

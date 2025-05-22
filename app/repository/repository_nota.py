@@ -19,7 +19,7 @@ load_dotenv()
 PROJECT_ROOT = getenv("PROJECT_ROOT")
 path.insert(0, PROJECT_ROOT)
 
-from model.model_nota import ModelNota
+from app.model.model_nota import ModelNota
 
 LIMIT_REGISTRO = int(getenv("LIMIT_REGISTRO"))
 

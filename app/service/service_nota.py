@@ -16,9 +16,9 @@ load_dotenv()
 PROJECT_ROOT = getenv("PROJECT_ROOT")
 path.insert(0, PROJECT_ROOT)
 
-from model.model_nota import ModelNota
+from app.repository.repository_nota import RepositoryNota
+from app.model.model_nota import ModelNota
 from utils.utils_nota import UtilsNota
-from repository.repository_nota import RepositoryNota
 from config.logger import LoggerPro
 
 
