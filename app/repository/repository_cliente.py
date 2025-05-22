@@ -177,8 +177,10 @@ class RepositoryCliente:
 
             clientes = []
 
-            for cliente in self.cursor.fetchall():
-                clientes.append(ModelCliente(*cliente))
+            dados = self.cursor.fetchall()
+            if dados:
+                for cliente in dados:
+                    clientes.append(ModelCliente(*cliente))
 
             return clientes
 

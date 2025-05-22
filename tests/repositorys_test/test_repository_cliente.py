@@ -59,7 +59,7 @@ class TestRepositoryCliente:
 
             repository_teste.criar_tabelas()
 
-            id_teste = 1
+            id_teste = 2
             nome_teste = "Teste"
             centro_de_custo_teste = "Teste"
             tipo_teste = "Próprio"
@@ -111,7 +111,7 @@ class TestRepositoryCliente:
 
             repository_teste.criar_tabelas()
 
-            id_teste = 1
+            id_teste = 2
             nome_teste = "Teste_alterado"
             centro_de_custo_teste = "Teste_alterado"
             tipo_teste = "Consorcio"
@@ -139,7 +139,7 @@ class TestRepositoryCliente:
 
             repository_teste.criar_tabelas()
 
-            id_teste = 1
+            id_teste = 2
             nome_teste = "Teste_alterado"
             centro_de_custo_teste = "Teste_alterado"
             tipo_teste = "Consorcio"

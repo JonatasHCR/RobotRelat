@@ -12,7 +12,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0,PROJECT_ROOT)
 
 from model.model_cliente import ModelCliente
-from utils.utils import UtilsPro
+from utils.utils_cliente import UtilsCliente
 from config.logger import LoggerPro
 from repository.repository_cliente import RepositoryCliente
 from sqlite3 import IntegrityError
@@ -21,12 +21,12 @@ from sqlite3 import IntegrityError
 class ServiceCliente:
 
     def __init__(self) -> None:
-        self.utils = UtilsPro()
+        self.utils = UtilsCliente()
         self.repository = RepositoryCliente()
         self.logger = LoggerPro()
     
     def formatar(self,cliente: ModelCliente) -> ModelCliente:
-        cliente = self.utils.formatar_cliente(cliente)
+        cliente = self.utils.formatar(cliente)
         
         return cliente
     

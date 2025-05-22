@@ -59,9 +59,9 @@ class RelatorioView:
             relatorio = self.cursor.fetchall()
 
             lista = []
-
-            for dados in relatorio:
-                lista.append(ModelRelatorio(*dados))
+            if relatorio:
+                for dados in relatorio:
+                    lista.append(ModelRelatorio(*dados))
             
             return lista
         

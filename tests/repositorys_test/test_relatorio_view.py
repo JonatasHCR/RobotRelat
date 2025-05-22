@@ -23,6 +23,7 @@ class TestRelatorioView:
         try:
             repository_teste_cliente = RepositoryCliente()
             repository_teste_cliente.database = getenv("DB_FILE_TEST")
+            repository_teste_cliente.criar_tabelas()
 
             id_teste = 1
             nome_teste = "Teste"
@@ -38,6 +39,7 @@ class TestRelatorioView:
 
             repository_teste_nota = RepositoryNota()
             repository_teste_nota.database = getenv("DB_FILE_TEST")
+            repository_teste_nota.criar_tabelas()
 
             id_teste = 1
             centro_de_custo_teste = "Teste"
@@ -68,6 +70,10 @@ class TestRelatorioView:
 
             if len(dados) == 0:
                 raise ValueError(f"Dados não estão sendo retornados")
+
+
+            repository_teste_cliente.deletar(cliente_teste)
+            repository_teste_nota.deletar(nota_teste)
 
             assert True
 

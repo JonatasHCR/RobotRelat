@@ -174,8 +174,11 @@ class RepositoryNota:
             )
 
             notas = []
-            for nota in self.cursor.fetchall():
-                notas.append(ModelNota(*nota))
+
+            dados = self.cursor.fetchall()
+            if dados:
+                for nota in dados:
+                    notas.append(ModelNota(*nota))
 
             return notas
 

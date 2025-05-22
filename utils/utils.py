@@ -354,12 +354,12 @@ class UtilsPro:
 
     def pegar_mes_atual(self) -> int:
         """
-        Retorna o índice do mês atual (baseado em zero, onde janeiro é 0 e dezembro é 11).
+        Retorna o índice do mês atual (baseado em zero, onde janeiro é 1 e dezembro é 11).
 
         return:
             (int): Índice do mês atual.
         """
-        return datetime.now().month - 1
+        return datetime.now().month
 
     def pegar_ano_atual(self) -> int:
         """

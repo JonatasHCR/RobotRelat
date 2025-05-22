@@ -19,7 +19,7 @@ class ModelNota:
     def __init__(
         self,
         id: int,
-        centro_de_custo: str,
+        cc: str,
         numero_nota: str,
         valor_nota: float,
         data_fat: str,
@@ -33,7 +33,7 @@ class ModelNota:
 
         param:
             id (int): Identificação da conjunto de dados
-            centro_de_custo (str): Centro de custo relacionado ao cliente
+            cc (str): Centro de custo relacionado ao cliente
             numero_nota (str): Numero da nota fiscal
             valor_nota (float): Valor da nota fiscal
             data_fat (str): Data de faturamento da nota
@@ -44,7 +44,7 @@ class ModelNota:
         """
 
         self.id = id
-        self.cc = centro_de_custo
+        self.cc = cc
         self.numero_nota = numero_nota
         self.valor_nota = valor_nota
         self.data_fat = data_fat

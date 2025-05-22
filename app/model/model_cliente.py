@@ -17,7 +17,7 @@ class ModelCliente:
     """
 
     def __init__(
-        self, id: int, nome: str, centro_de_custo: str, tipo: str, descricao: str
+        self, id: int, nome: str, cc: str, tipo: str, descricao: str
     ) -> None:
         """
         Inicializa criando os atributos relacionado as colunas,
@@ -33,7 +33,7 @@ class ModelCliente:
         """
         self.id = id
         self.nome = nome
-        self.cc = centro_de_custo
+        self.cc = cc
         self.tipo = tipo
         self.descricao = descricao
 

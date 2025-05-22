@@ -13,7 +13,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, PROJECT_ROOT)
 
 from model.model_nota import ModelNota
-from utils.utils import UtilsPro
+from utils.utils_nota import UtilsNota
 from repository.repository_nota import RepositoryNota
 from config.logger import LoggerPro
 
@@ -21,12 +21,12 @@ from config.logger import LoggerPro
 class ServiceNota:
 
     def __init__(self) -> None:
-        self.utils = UtilsPro()
+        self.utils = UtilsNota()
         self.repository = RepositoryNota()
         self.logger = LoggerPro()
 
     def formatar(self, nota: ModelNota) -> ModelNota:
-        nota = self.utils.formatar_nota(nota)
+        nota = self.utils.formatar(nota)
         return nota
 
     def validar(self, nota: ModelNota) -> bool:
@@ -58,7 +58,7 @@ class ServiceNota:
 
     def retirar(self, pagina_atual: int) -> list[ModelNota]:
 
-        return self.utils.customizar_nota(self.repository.retirar(pagina_atual))
+        return self.utils.customizar(self.repository.retirar(pagina_atual))
 
     def modificar(self, nota: ModelNota) -> None:
         nota = self.formatar(nota)

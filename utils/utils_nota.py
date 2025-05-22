@@ -13,7 +13,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, PROJECT_ROOT)
 
 
-from datetime import date
+from datetime import datetime
 import customtkinter as ctk
 
 from app.model.model_nota import ModelNota
@@ -57,7 +57,7 @@ class UtilsNota:
             "Ano de Referência",
         ]
 
-    def formatar_nota(self, nota: ModelNota) -> ModelNota:
+    def formatar(self, nota: ModelNota) -> ModelNota:
         """
         Formata os valores de um dicionário, convertendo datas e valores monetários.
 
@@ -73,16 +73,16 @@ class UtilsNota:
         nota.data_fat = self.formatar_data(str(nota.data_fat))
         nota.data_pag = self.formatar_data(str(nota.data_pag))
         if nota.data_fat != "":
-            data = date(date(*map(int, data.split("-"))))
-            nota.mes_ref = data.month
+            data = datetime.strptime(nota.data_fat, "%Y-%m-%d")
+            nota.mes_ref = data.month - 1
             nota.ano_ref = data.year
         else:
-            nota.mes_ref = self.MESES.index(str(nota.mes_ref).strip()) + 1
+            nota.mes_ref = self.MESES.index(str(nota.mes_ref).strip())
             nota.ano_ref = int(str(nota.ano_ref).strip())
 
         return nota
 
-    def customizar_nota(self, notas: list[ModelNota]) -> list[ModelNota]:
+    def customizar(self, notas: list[ModelNota]) -> list[ModelNota]:
         """
         Formata os valores de um dicionário, convertendo datas e valores monetários.
 
@@ -118,16 +118,12 @@ class UtilsNota:
         """
         valor = dinheiro.strip()
         if valor == "":
-            self.logger.mensagem_error("Valor da Nota não pode estar em branco")
             raise ValueError("Valor da Nota não pode estar em branco")
 
         try:
             valor = valor.replace("R$", "").replace(".", "").replace(",", ".")
             return float(valor.strip())
         except ValueError:
-            self.logger.mensagem_error(
-                "Erro ao converter valor da nota verifique se existe uma letra presente"
-            )
             raise ValueError(
                 "Erro ao converter valor da nota verifique se existe uma letra presente"
             )
@@ -177,16 +173,25 @@ class UtilsNota:
         return:
             (str): Data formatada como string.
         """
-        data = data.strip()
-        if data == "":
-            return data
-        else:
-            if data.find("/") != -1:
-                data_for = date(*map(int, data.split("/")))
+        try:
+            data = data.strip()
+            if data == "":
+                return data
             else:
-                data_for = date(*map(int, data.split("-")))
+                data_for = datetime.strptime(data, "%d/%m/%Y")
+                data_for = data_for.strftime("%Y-%m-%d")
 
-            return data_for.isoformat()
+                return data_for
+        except ValueError:
+            try:
+                data_for = datetime.strptime(data, "%Y-%m-%d")
+                data_for = data_for.strftime("%Y-%m-%d")
+
+                return data_for
+            except ValueError:
+                raise ValueError(
+                    "Formato da Data invalido, use somente DD/MM/AA ou AA-MM-DD"
+                )
 
     def customizar_data(self, data: str) -> str:
         """
@@ -198,32 +203,34 @@ class UtilsNota:
         return:
             (str): Data formatada como string.
         """
-        data = data.strip()
         if data == "":
             return data
-        else:
-            if data.find("/") != -1:
-                data_for = date(*map(int, data.split("/")))
-            else:
-                data_for = date(*map(int, data.split("-")))
+        try:
+            data_for = datetime.strptime(data, "%Y-%m-%d")
+            data_for = data_for.strftime("%d/%m/%Y")
+        except ValueError:
+            data_for = datetime.strptime(data, "%d/%m/%Y")
+            data_for = data_for.strftime("%d/%m/%Y")
 
-            return data_for.strftime("%d/%m/%Y")
+        return data_for
 
     def validar_data(self, nota: ModelNota) -> bool:
         if nota.data_pag == "":
             return True
         try:
-            if date(*map(int, nota.data_fat.split("-"))) > date(
-                *map(int, nota.data_pag.split("-"))
+            if datetime.strptime(nota.data_fat, "%Y-%m-%d") > datetime.strptime(
+                nota.data_pag, "%Y-%m-%d"
             ):
                 return False
         except ValueError:
             try:
-                if date(*map(int, nota.data_fat.split("/"))) > date(
-                    *map(int, nota.data_pag.split("/"))
+                if datetime.strptime(nota.data_fat, "%d/%m/%Y") > datetime.strptime(
+                    nota.data_pag, "%d/%m/%Y"
                 ):
                     return False
             except ValueError:
-                return False
+                raise ValueError(
+                    "Formato da Data invalido, use somente DD/MM/AA ou AA-MM-DD"
+                )
 
         return True

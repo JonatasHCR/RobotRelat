@@ -60,7 +60,7 @@ class TestRepositoryNota:
 
             repository_teste.criar_tabelas()
 
-            id_teste = 1
+            id_teste = 2
             centro_de_custo_teste = "Teste"
             numero_nota_teste = "123"
             valor_nota_teste = 123.4
@@ -122,7 +122,7 @@ class TestRepositoryNota:
 
             repository_teste.criar_tabelas()
 
-            id_teste = 1
+            id_teste = 2
             centro_de_custo_teste = "Teste_alterado"
             numero_nota_teste = "456"
             valor_nota_teste = 456.7
@@ -160,7 +160,7 @@ class TestRepositoryNota:
 
             repository_teste.criar_tabelas()
 
-            id_teste = 1
+            id_teste = 2
             centro_de_custo_teste = "Teste_alterado"
             numero_nota_teste = "456"
             valor_nota_teste = 456.7

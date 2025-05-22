@@ -18,7 +18,7 @@ import openpyxl
 from openpyxl.styles import NamedStyle,Alignment,Font,PatternFill
 
 #importação para tipagem
-from model.model_relatorio import ModelPro
+from app.model.model_relatorio import ModelRelatorio
 from datetime import datetime
 
 #importação para funcionamento da classe
@@ -42,15 +42,15 @@ class RelatorioPro:
         self.workbook = None
 
     
-    def mensal(self, dados_mes: list[ModelPro], dados_mes_anterior: list[ModelPro], total_periodo: dict[str,dict[str,int]]):
+    def mensal(self, dados_mes: list[ModelRelatorio], dados_mes_anterior: list[ModelRelatorio], total_periodo: dict[str,dict[str,int]]):
         """
         Gera o relatório mensal, contendo o faturamento do 
         mês atual e o faturamento até o mês anterior
 
         param:
-            dados_mes (list[ModelPro]): lista contendo os dados
+            dados_mes (list[ModelRelatorio]): lista contendo os dados
             do mês escolhido que estão na instância
-            dados_mes_anterior (list[ModelPro]): lista contendo os dados
+            dados_mes_anterior (list[ModelRelatorio]): lista contendo os dados
             do mês anterior ao escolhido que estão na instância
             data_atual(datetime): data da geração do relatório
         """
@@ -210,7 +210,7 @@ class RelatorioPro:
         #salvando a planilha
         self.workbook.save(nome)
     
-    def mensal_separado(self, dados_mes: list[ModelPro], dados_mes_anterior: list[ModelPro], total_periodo: dict[str,dict[str,int]]):
+    def mensal_separado(self, dados_mes: list[ModelRelatorio], dados_mes_anterior: list[ModelRelatorio], total_periodo: dict[str,dict[str,int]]):
         #ativando a planilha
         self.planilha_separada = self.workbook.create_sheet(title='Previsão Separada')
 
