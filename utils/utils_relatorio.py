@@ -6,12 +6,16 @@ listas, entre outras ajudas para o projeto.
 
 """
 
-import os
-import sys
+from os import getenv
+from sys import path
 from datetime import datetime
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
-sys.path.insert(0, PROJECT_ROOT)
+from dotenv import load_dotenv
+
+load_dotenv()
+
+PROJECT_ROOT = getenv("PROJECT_ROOT")
+path.insert(0, PROJECT_ROOT)
 
 
 from openpyxl.worksheet.worksheet import Worksheet

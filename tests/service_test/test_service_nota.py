@@ -176,6 +176,21 @@ class TestServiceNota:
             print("Tipo do erro:", type(error).__name__)
             print("Mensagem:", str(error))
             assert False
+    
+    def test_contar_paginas_na_tabela(self):
+        try:
+            service_teste = ServiceNota()
+
+            service_teste.repository.database = getenv("DB_FILE_TEST")
+            verificar = service_teste.paginas()
+
+            assert verificar == 1
+
+        except Exception as error:
+            print("Tipo do erro:", type(error).__name__)
+            print("Mensagem:", str(error))
+            assert False
+
 
     def test_deletar_dados_formatados_na_tabela(self):
         try:

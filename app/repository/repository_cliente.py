@@ -146,10 +146,8 @@ class RepositoryCliente:
         try:
             self.conectar()
 
-            query = """
-            SELECT 
-                COUNT(*) 
-            FROM clientes"""
+            query = """SELECT COUNT(*) FROM clientes"""
+            
             self.cursor.execute(query)
 
             total_de_dados = self.cursor.fetchone()[0]

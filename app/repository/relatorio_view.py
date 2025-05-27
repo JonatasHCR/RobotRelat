@@ -34,11 +34,7 @@ class RelatorioView:
         try:
             self.conectar()
 
-            query = """
-            SELECT 
-                COUNT(*) 
-            FROM clientes 
-            JOIN notas ON clientes.cc = notas.cc"""
+            query = """SELECT COUNT(*) FROM vw_relatorios """
 
             self.cursor.execute(query)
 
@@ -57,9 +53,7 @@ class RelatorioView:
     def retirar(self, pagina: int) -> list[ModelRelatorio]:
         try:
             self.conectar()
-            query = """
-            SELECT * FROM vw_relatorios
-            LIMIT ? OFFSET ?"""
+            query = """SELECT * FROM vw_relatorios LIMIT ? OFFSET ?"""
             self.cursor.execute(
                 query,
                 (

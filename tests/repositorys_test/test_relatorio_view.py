@@ -80,3 +80,20 @@ class TestRelatorioView:
             print("Tipo do erro:", type(error).__name__)
             print("Mensagem:", str(error))
             assert False
+    
+    def test_contar_paginas_na_tabela(self):
+        try:
+            repository_teste = RelatorioView()
+            repository_teste.database = getenv("DB_FILE_TEST")
+
+            paginas = repository_teste.contar_pagina()
+
+            if paginas == 0:
+                assert True
+            else:
+                raise ValueError(f"Dados não estão sendo retornados direito")
+
+        except Exception as error:
+            print("Tipo do erro:", type(error).__name__)
+            print("Mensagem:", str(error))
+            assert False

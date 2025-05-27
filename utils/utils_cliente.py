@@ -6,15 +6,17 @@ listas, entre outras ajudas para o projeto.
 
 """
 
-import os
-import sys
+from os import getenv
+from sys import path
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
-sys.path.insert(0, PROJECT_ROOT)
-
-
-from datetime import date
+from dotenv import load_dotenv
 import customtkinter as ctk
+
+load_dotenv()
+
+PROJECT_ROOT = getenv("PROJECT_ROOT")
+path.insert(0, PROJECT_ROOT)
+
 
 from app.model.model_cliente import ModelCliente
 
@@ -43,3 +45,19 @@ class UtilsCliente:
         cliente.descricao = str(cliente.descricao).strip()
 
         return cliente
+
+    def limpar(self, janela: ctk.CTk) -> None:
+        """
+        Remove todos os widgets da janela, exceto os primeiros botões principais.
+
+        param
+            janela(CTk): A janela de onde os widgets serão removidos.
+        """
+        contador = 0
+        for componente in janela.winfo_children():
+            if contador > 2 and isinstance(
+                componente, (ctk.CTkLabel, ctk.CTkEntry, ctk.CTkButton, ctk.CTkComboBox)
+            ):
+                componente.destroy()
+
+            contador += 1

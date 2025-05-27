@@ -8,7 +8,7 @@ from config.settings import criar_env
 
 criar_env()
 
-from view.view import App
-from controller.controller import ControllerPro
+from app.view.view import App
+from app.controller.controller_relatorio import ControllerRelatorio
 
-App(ControllerPro())
+App(ControllerRelatorio())
